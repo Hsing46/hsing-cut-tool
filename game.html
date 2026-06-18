@@ -5,15 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#120824">
+<meta name="theme-color" content="#0f0824">
 <title>勇者打怪獸 💕</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --bg:#120824;--bg2:#1e1035;--bg3:#2d1b4e;--bg4:#3d2460;
-  --gold:#ffd700;--hp:#4caf50;--mhp:#ef5350;--exp:#42a5f5;
-  --text:#f0e6ff;--muted:#9980c0;--border:#3d2460;
-  --red:#ff5252;--green:#69f0ae;--purple:#e040fb;--orange:#ff9800;
+  --bg:#0f0824;--bg2:#1a1038;--bg3:#25194a;--bg4:#31225a;
+  --pink:#ff6eb4;--lavender:#c084fc;--mint:#6ee7b7;
+  --peach:#fca5a5;--sky:#93c5fd;--gold:#fde68a;
+  --text:#fef0f7;--muted:#c084fc;--border:#3d2860;
+  --hp:#6ee7b7;--mhp:#fca5a5;--exp:#93c5fd;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvetica Neue',Arial,sans-serif;overflow:hidden;user-select:none;}
 #app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;}
@@ -22,81 +23,87 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvet
 #hdr{background:var(--bg2);padding:10px 14px 8px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .hdr-top{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
 .hero-icon{font-size:1.6em;}
-.hero-name{font-weight:bold;font-size:0.95em;color:var(--gold);flex:1;}
-.lv-badge{background:var(--gold);color:#120824;border-radius:20px;padding:2px 9px;font-size:0.72em;font-weight:bold;}
-.gold-chip{background:#1a1200;border:1px solid var(--gold);border-radius:6px;padding:2px 9px;font-size:0.72em;color:var(--gold);white-space:nowrap;}
+.hero-name{font-weight:bold;font-size:0.95em;color:var(--pink);flex:1;}
+.lv-badge{background:var(--pink);color:#fff;border-radius:20px;padding:2px 9px;font-size:0.72em;font-weight:bold;}
+.gold-chip{background:#1a0a22;border:1px solid var(--gold);border-radius:6px;padding:2px 9px;font-size:0.72em;color:var(--gold);white-space:nowrap;}
 .bar-row{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
 .bar-lbl{font-size:0.62em;color:var(--muted);width:22px;flex-shrink:0;text-align:right;}
-.bar-wrap{flex:1;height:11px;background:#0a0518;border-radius:6px;overflow:hidden;}
+.bar-wrap{flex:1;height:11px;background:#08041a;border-radius:6px;overflow:hidden;}
 .bar-fill{height:100%;border-radius:6px;transition:width 0.25s;}
-.bar-fill.hp{background:linear-gradient(90deg,#2e7d32,#66bb6a);}
-.bar-fill.exp{background:linear-gradient(90deg,#1565c0,#64b5f6);}
+.bar-fill.hp{background:linear-gradient(90deg,#059669,#6ee7b7);}
+.bar-fill.exp{background:linear-gradient(90deg,#7c3aed,#93c5fd);}
 .bar-num{font-size:0.6em;color:var(--muted);width:72px;text-align:right;flex-shrink:0;}
-.stats-row{display:flex;gap:6px;margin-top:3px;}
-.stat-chip{background:#0a0518;border-radius:5px;padding:2px 8px;font-size:0.65em;color:var(--muted);}
+.stats-row{display:flex;gap:6px;margin-top:3px;flex-wrap:wrap;}
+.stat-chip{background:#08041a;border-radius:5px;padding:2px 8px;font-size:0.65em;color:var(--muted);}
 .stat-chip b{color:var(--text);}
-.regen-chip{background:#001a10;border:1px solid #2e7d32;border-radius:5px;padding:2px 8px;font-size:0.6em;color:#81c784;margin-left:auto;}
+.regen-chip{background:#011a10;border:1px solid #059669;border-radius:5px;padding:2px 8px;font-size:0.6em;color:var(--mint);margin-left:auto;}
 
 /* ── Battle area ── */
 #battle-area{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
 
 /* ── Monster zone ── */
-#mzone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:12px 16px 8px;min-height:0;background:radial-gradient(ellipse at 50% 60%, #2d1b4e33 0%, transparent 70%);}
+#mzone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:12px 16px 8px;min-height:0;
+  background:radial-gradient(ellipse at 50% 55%, #4a1a5522 0%, transparent 70%);}
 .zone-lbl{position:absolute;top:8px;left:14px;font-size:0.65em;color:var(--muted);}
 .kill-lbl{position:absolute;top:8px;right:14px;font-size:0.65em;color:var(--gold);}
 #m-wrap{display:flex;flex-direction:column;align-items:center;gap:7px;width:100%;}
-#m-emoji{font-size:clamp(3.5em,12vw,5.5em);line-height:1;filter:drop-shadow(0 0 18px rgba(200,80,80,0.45));transition:transform 0.1s;}
+#m-emoji{font-size:clamp(3.8em,13vw,6em);line-height:1;
+  filter:drop-shadow(0 0 22px rgba(255,110,180,0.4));transition:transform 0.1s;}
 #m-emoji.shake{animation:shake 0.28s;}
 #m-emoji.dead{animation:die 0.55s forwards;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px) rotate(-4deg);}75%{transform:translateX(8px) rotate(4deg);}}
-@keyframes die{0%{transform:scale(1);opacity:1;}50%{transform:scale(1.4) rotate(15deg);}100%{transform:scale(0) rotate(40deg);opacity:0;}}
-#m-name{font-size:1em;font-weight:bold;color:#ff8a80;letter-spacing:0.5px;}
-.mhp-wrap{width:min(220px,60vw);height:13px;background:#0a0518;border-radius:7px;overflow:hidden;border:1px solid #4a2a4e;}
-.mhp-fill{height:100%;background:linear-gradient(90deg,#b71c1c,#ef5350);border-radius:7px;transition:width 0.25s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px) rotate(-5deg);}75%{transform:translateX(8px) rotate(5deg);}}
+@keyframes die{0%{transform:scale(1);opacity:1;}50%{transform:scale(1.5) rotate(20deg);}100%{transform:scale(0) rotate(45deg);opacity:0;}}
+#m-name{font-size:1em;font-weight:bold;color:var(--peach);letter-spacing:0.5px;}
+.mhp-wrap{width:min(220px,60vw);height:13px;background:#08041a;border-radius:7px;overflow:hidden;border:1px solid #4a2060;}
+.mhp-fill{height:100%;background:linear-gradient(90deg,#be123c,#fca5a5);border-radius:7px;transition:width 0.25s;}
 .mhp-num{font-size:0.65em;color:var(--muted);text-align:center;}
 .m-stats{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
-.m-stat{font-size:0.62em;color:var(--muted);background:#0a0518;padding:1px 7px;border-radius:4px;}
-.m-stat b{color:#ff8a80;}
+.m-stat{font-size:0.62em;color:var(--muted);background:#08041a;padding:1px 7px;border-radius:4px;}
+.m-stat b{color:var(--peach);}
 
 /* ── Battle log ── */
-#log{height:68px;overflow-y:auto;padding:5px 14px;background:#08031a;border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-shrink:0;}
+#log{height:68px;overflow-y:auto;padding:5px 14px;background:#060212;border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-shrink:0;}
 .ll{font-size:0.7em;line-height:1.75;color:var(--muted);}
-.ll.dmg{color:#ff8a80;}.ll.hit{color:#ffb300;}.ll.heal{color:#69f0ae;}.ll.exp{color:#64b5f6;}
-.ll.lv{color:var(--gold);font-weight:bold;}.ll.miss{color:#555;}.ll.crit{color:#ff4081;font-weight:bold;}
-.ll.skill{color:#e040fb;font-weight:bold;}.ll.sys{color:#9c27b0;}
+.ll.dmg{color:var(--peach);}.ll.hit{color:var(--gold);}.ll.heal{color:var(--mint);}
+.ll.exp{color:var(--sky);}.ll.lv{color:var(--pink);font-weight:bold;}
+.ll.miss{color:#444;}.ll.crit{color:#ff4081;font-weight:bold;}
+.ll.skill{color:var(--lavender);font-weight:bold;}.ll.sys{color:var(--pink);}
 
 /* ── Action bar ── */
 #abar{background:var(--bg2);border-top:1px solid var(--border);padding:9px 12px 10px;flex-shrink:0;}
 .tabs{display:flex;gap:6px;margin-bottom:9px;}
 .tab{flex:1;padding:5px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);font-size:0.72em;cursor:pointer;text-align:center;transition:all 0.15s;}
-.tab.on{background:#5e1a8a;color:#fff;border-color:#9c27b0;}
+.tab.on{background:#7c3aed;color:#fff;border-color:var(--lavender);}
 .panel{display:none;}.panel.on{display:block;}
 
 /* Battle panel */
 .btns3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;}
-#atk-btn{padding:14px;border-radius:10px;border:none;background:linear-gradient(135deg,#c62828,#ef5350);color:#fff;font-size:1.05em;font-weight:bold;cursor:pointer;box-shadow:0 4px 16px #ef535055;transition:transform 0.1s,box-shadow 0.1s;letter-spacing:1px;}
-#atk-btn:active{transform:scale(0.93);box-shadow:0 2px 6px #ef535044;}
-.qsk{padding:7px 4px;border-radius:10px;background:var(--bg3);color:#fff;font-size:0.7em;cursor:pointer;text-align:center;border:1px solid;transition:all 0.15s;position:relative;}
+#atk-btn{padding:14px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,#db2777,#ff6eb4);
+  color:#fff;font-size:1.05em;font-weight:bold;cursor:pointer;
+  box-shadow:0 4px 18px #ff6eb455;transition:transform 0.1s,box-shadow 0.1s;letter-spacing:1px;}
+#atk-btn:active{transform:scale(0.93);box-shadow:0 2px 8px #ff6eb444;}
+.qsk{padding:7px 4px;border-radius:10px;background:var(--bg3);color:#fff;font-size:0.7em;cursor:pointer;text-align:center;border:1px solid;transition:all 0.15s;}
 .qsk:active{transform:scale(0.94);}
-.qsk.p0{border-color:#ff9800;color:#ff9800;}
-.qsk.p1{border-color:#4caf50;color:#4caf50;}
-.qsk.cd{opacity:0.65;}
+.qsk.p0{border-color:#f97316;color:#fdba74;}
+.qsk.p1{border-color:#6ee7b7;color:#6ee7b7;}
+.qsk.cd{opacity:0.6;}
 
 /* Skills panel */
 .sk-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-.sk-card{background:var(--bg3);border-radius:9px;padding:9px 10px;border:1px solid var(--border);cursor:pointer;transition:all 0.15s;}
+.sk-card{background:var(--bg3);border-radius:10px;padding:9px 10px;border:1px solid var(--border);cursor:pointer;transition:all 0.15s;}
 .sk-card:active:not(.locked){transform:scale(0.97);}
 .sk-card.locked{opacity:0.45;cursor:not-allowed;}
 .sk-nm{font-size:0.8em;font-weight:bold;margin-bottom:2px;}
 .sk-desc{font-size:0.63em;color:var(--muted);}
-.sk-cd{font-size:0.6em;color:#888;margin-top:2px;}
-.sk-lock{font-size:0.58em;color:#9c27b0;}
+.sk-cd{font-size:0.6em;color:#666;margin-top:2px;}
+.sk-lock{font-size:0.58em;color:var(--lavender);}
 
 /* Shop panel */
 .shop-list{display:flex;flex-direction:column;gap:5px;max-height:118px;overflow-y:auto;}
 .sh-item{display:flex;align-items:center;gap:9px;background:var(--bg3);border-radius:9px;padding:7px 11px;border:1px solid var(--border);cursor:pointer;transition:all 0.15s;}
 .sh-item:active:not(.poor){transform:scale(0.98);}
-.sh-item.poor{opacity:0.45;cursor:not-allowed;}
+.sh-item.poor{opacity:0.4;cursor:not-allowed;}
 .sh-ico{font-size:1.45em;}
 .sh-info{flex:1;}
 .sh-nm{font-size:0.8em;font-weight:bold;}
@@ -104,27 +111,40 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvet
 .sh-price{font-size:0.8em;color:var(--gold);font-weight:bold;white-space:nowrap;}
 
 /* Floating damage */
-.pop{position:absolute;font-weight:bold;pointer-events:none;animation:floatup 0.8s ease-out forwards;z-index:50;}
-@keyframes floatup{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-55px) scale(0.7);opacity:0;}}
+.pop{position:absolute;font-weight:bold;pointer-events:none;animation:floatup 0.85s ease-out forwards;z-index:50;}
+@keyframes floatup{0%{transform:translateY(0) scale(1.1);opacity:1;}100%{transform:translateY(-58px) scale(0.7);opacity:0;}}
+
+/* Hearts decoration */
+.hearts{position:absolute;pointer-events:none;font-size:1.1em;animation:heartfly 1.2s ease-out forwards;z-index:40;}
+@keyframes heartfly{0%{transform:translateY(0) scale(1);opacity:0.9;}100%{transform:translateY(-70px) scale(0.5);opacity:0;}}
 
 /* Level-up overlay */
-#lv-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
-.lv-star{font-size:3em;animation:spin 1s linear infinite;}
-@keyframes spin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
-.lv-big{font-size:2.4em;font-weight:bold;color:var(--gold);animation:pulse 0.5s alternate infinite;}
-@keyframes pulse{from{transform:scale(0.95);}to{transform:scale(1.08);}}
-.lv-sub{font-size:0.88em;color:var(--text);text-align:center;line-height:1.8;white-space:pre-line;}
-.lv-ok{margin-top:6px;padding:11px 28px;background:var(--gold);color:#120824;border:none;border-radius:10px;font-size:0.95em;font-weight:bold;cursor:pointer;}
+#lv-ov{position:fixed;inset:0;background:rgba(10,4,24,.88);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.lv-star{font-size:3.2em;animation:spinpulse 0.9s ease-in-out infinite alternate;}
+@keyframes spinpulse{from{transform:scale(0.85) rotate(-8deg);}to{transform:scale(1.15) rotate(8deg);}}
+.lv-big{font-size:2.4em;font-weight:bold;color:var(--pink);animation:glow 0.6s alternate infinite;}
+@keyframes glow{from{text-shadow:0 0 8px var(--pink);}to{text-shadow:0 0 22px var(--pink),0 0 40px #ff6eb444;}}
+.lv-sub{font-size:0.9em;color:var(--text);text-align:center;line-height:1.85;white-space:pre-line;max-width:280px;}
+.lv-ok{margin-top:6px;padding:12px 30px;background:linear-gradient(135deg,#db2777,#ff6eb4);color:#fff;border:none;border-radius:12px;font-size:0.95em;font-weight:bold;cursor:pointer;box-shadow:0 4px 16px #ff6eb455;}
 
 /* Dead overlay */
-#dead-ov{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:11px;}
-.dead-big{font-size:2em;color:#ef5350;font-weight:bold;}
+#dead-ov{position:fixed;inset:0;background:rgba(10,4,24,.92);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:11px;}
+.dead-big{font-size:2em;color:var(--peach);font-weight:bold;}
 .dead-sub{font-size:0.82em;color:var(--muted);text-align:center;line-height:1.85;white-space:pre-line;}
-.revive-btn{padding:11px 28px;background:#c62828;color:#fff;border:none;border-radius:10px;font-size:0.92em;font-weight:bold;cursor:pointer;}
+.revive-btn{padding:11px 28px;background:linear-gradient(135deg,#7c3aed,#c084fc);color:#fff;border:none;border-radius:12px;font-size:0.92em;font-weight:bold;cursor:pointer;}
 
-/* Milestone toast */
-#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#3d0070;border:1px solid #9c27b0;border-radius:10px;padding:10px 18px;font-size:0.82em;color:#fff;text-align:center;z-index:150;max-width:300px;line-height:1.6;display:none;animation:toastin 0.3s ease;}
-@keyframes toastin{from{opacity:0;transform:translateX(-50%) translateY(-10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+/* Toast */
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,#4a1a5a,#7c2090);
+  border:1px solid var(--pink);border-radius:12px;padding:10px 20px;
+  font-size:0.82em;color:#fff;text-align:center;z-index:150;max-width:300px;line-height:1.65;
+  display:none;animation:toastin 0.3s ease;box-shadow:0 4px 20px #ff6eb433;}
+@keyframes toastin{from{opacity:0;transform:translateX(-50%) translateY(-12px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+
+/* Scrollbar cute */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 </style>
 </head>
 <body>
@@ -133,18 +153,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvet
   <!-- Header -->
   <div id="hdr">
     <div class="hdr-top">
-      <span class="hero-icon">⚔️</span>
+      <span class="hero-icon">🌸</span>
       <span class="hero-name" id="el-name">勇者</span>
       <span class="lv-badge" id="el-lv">Lv.1</span>
-      <span class="gold-chip" id="el-gold">💰 0</span>
+      <span class="gold-chip" id="el-gold">✨ 0</span>
     </div>
     <div class="bar-row">
-      <span class="bar-lbl" style="color:#81c784">HP</span>
+      <span class="bar-lbl" style="color:var(--mint)">HP</span>
       <div class="bar-wrap"><div class="bar-fill hp" id="hp-bar" style="width:100%"></div></div>
       <span class="bar-num" id="hp-num">100/100</span>
     </div>
     <div class="bar-row">
-      <span class="bar-lbl" style="color:#64b5f6">EXP</span>
+      <span class="bar-lbl" style="color:var(--sky)">EXP</span>
       <div class="bar-wrap"><div class="bar-fill exp" id="exp-bar" style="width:0%"></div></div>
       <span class="bar-num" id="exp-num">0/100</span>
     </div>
@@ -152,45 +172,45 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvet
       <div class="stat-chip">攻 <b id="el-atk">10</b></div>
       <div class="stat-chip">防 <b id="el-def">2</b></div>
       <div class="stat-chip">波 <b id="el-wave" style="color:var(--gold)">1</b></div>
-      <div class="regen-chip">♻️ 每2秒回血</div>
+      <div class="regen-chip">💚 每2秒回血</div>
     </div>
   </div>
 
   <div id="battle-area">
     <!-- Monster zone -->
     <div id="mzone">
-      <span class="zone-lbl" id="el-zone">🌿 新手村</span>
-      <span class="kill-lbl" id="el-kills">擊殺 0</span>
+      <span class="zone-lbl" id="el-zone">🌸 粉紅草原</span>
+      <span class="kill-lbl" id="el-kills">✨ 擊殺 0</span>
       <div id="m-wrap">
-        <div id="m-emoji">🫧</div>
-        <div id="m-name">史萊姆</div>
+        <div id="m-emoji">🐌</div>
+        <div id="m-name">小蝸牛</div>
         <div class="mhp-wrap"><div class="mhp-fill" id="mhp-bar" style="width:100%"></div></div>
         <div class="mhp-num" id="mhp-num">20/20</div>
         <div class="m-stats">
-          <div class="m-stat">攻 <b id="m-atk">4</b></div>
+          <div class="m-stat">攻 <b id="m-atk">3</b></div>
           <div class="m-stat">防 <b id="m-def">0</b></div>
           <div class="m-stat">EXP <b id="m-exp">10</b></div>
-          <div class="m-stat">💰 <b id="m-gold">3</b></div>
+          <div class="m-stat">✨ <b id="m-gold">3</b></div>
         </div>
       </div>
     </div>
 
     <!-- Battle log -->
     <div id="log">
-      <div class="ll sys">⚔️ 冒險開始！為了心愛的人，打倒所有怪獸！</div>
+      <div class="ll sys">🌸 冒險開始！打倒所有可愛怪獸吧！</div>
     </div>
 
     <!-- Action bar -->
     <div id="abar">
       <div class="tabs">
-        <div class="tab on" onclick="switchTab('b')">⚔️ 戰鬥</div>
+        <div class="tab on" onclick="switchTab('b')">💖 戰鬥</div>
         <div class="tab" onclick="switchTab('s')">✨ 技能</div>
-        <div class="tab" onclick="switchTab('p')">🏪 商店</div>
+        <div class="tab" onclick="switchTab('p')">🛍️ 商店</div>
       </div>
 
       <div class="panel on" id="pan-b">
         <div class="btns3">
-          <button id="atk-btn" onclick="pAtk()">⚔️ 攻擊</button>
+          <button id="atk-btn" onclick="pAtk()">💖 攻擊</button>
           <button class="qsk p0" id="qs0" onclick="useSkill(0)">💥 強力<br>一擊<br><small>Lv1</small></button>
           <button class="qsk p1" id="qs1" onclick="useSkill(1)">💚 治癒<br>術<br><small>Lv5</small></button>
         </div>
@@ -209,18 +229,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvet
 
 <!-- Level-up overlay -->
 <div id="lv-ov">
-  <div class="lv-star">⭐</div>
-  <div class="lv-big">升級了！</div>
+  <div class="lv-star">🌟</div>
+  <div class="lv-big">升級啦！</div>
   <div class="lv-sub" id="lv-sub"></div>
-  <button class="lv-ok" onclick="closeLvUp()">繼續冒險！</button>
+  <button class="lv-ok" onclick="closeLvUp()">繼續冒險 💕</button>
 </div>
 
 <!-- Dead overlay -->
 <div id="dead-ov">
-  <div style="font-size:3em">💀</div>
-  <div class="dead-big">被打倒了...</div>
+  <div style="font-size:3em">🌹</div>
+  <div class="dead-big">被萌倒了...</div>
   <div class="dead-sub" id="dead-sub"></div>
-  <button class="revive-btn" onclick="revive()">復活！繼續戰鬥</button>
+  <button class="revive-btn" onclick="revive()">💜 復活！繼續戰鬥</button>
 </div>
 
 <!-- Toast -->
@@ -229,117 +249,121 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvet
 <script>
 // ─── Game Data ───────────────────────────────────────────
 const MONS = [
-  {name:'史萊姆',    e:'🫧', hp:20,   atk:3,  def:0,  exp:10,  g:3,   z:'🌿 新手村'},
-  {name:'蝙蝠',     e:'🦇', hp:30,   atk:5,  def:0,  exp:15,  g:5,   z:'🌿 新手村'},
-  {name:'大老鼠',   e:'🐀', hp:42,   atk:7,  def:1,  exp:20,  g:6,   z:'🌿 新手村'},
-  {name:'毒青蛙',   e:'🐸', hp:58,   atk:9,  def:1,  exp:27,  g:8,   z:'🌿 新手村'},
-  {name:'大蜘蛛',   e:'🕷️', hp:75,   atk:11, def:2,  exp:35,  g:10,  z:'🌿 新手村'},
-  {name:'哥布林',   e:'👺', hp:95,   atk:13, def:3,  exp:45,  g:14,  z:'🌲 幽暗森林'},
-  {name:'野狼',     e:'🐺', hp:120,  atk:16, def:3,  exp:56,  g:17,  z:'🌲 幽暗森林'},
-  {name:'大黃蜂',   e:'🐝', hp:150,  atk:19, def:4,  exp:68,  g:20,  z:'🌲 幽暗森林'},
-  {name:'石頭蟹',   e:'🦀', hp:185,  atk:16, def:9,  exp:80,  g:24,  z:'🌲 幽暗森林'},
-  {name:'惡靈幽靈', e:'👻', hp:220,  atk:23, def:5,  exp:95,  g:28,  z:'🌲 幽暗森林'},
-  {name:'骷髏兵',   e:'💀', hp:270,  atk:28, def:8,  exp:115, g:34,  z:'🦴 亡靈墓地'},
-  {name:'殭屍',     e:'🧟', hp:330,  atk:26, def:12, exp:135, g:40,  z:'🦴 亡靈墓地'},
-  {name:'食人魔',   e:'👾', hp:400,  atk:33, def:10, exp:160, g:48,  z:'🦴 亡靈墓地'},
-  {name:'鷹身女妖', e:'🦅', hp:480,  atk:38, def:9,  exp:185, g:55,  z:'🦴 亡靈墓地'},
-  {name:'牛頭人',   e:'🐂', hp:580,  atk:44, def:14, exp:215, g:65,  z:'🦴 亡靈墓地'},
-  {name:'半獸人',   e:'🗿', hp:700,  atk:52, def:17, exp:255, g:80,  z:'🏰 惡魔城堡'},
-  {name:'吸血鬼',   e:'🧛', hp:850,  atk:60, def:16, exp:300, g:95,  z:'🏰 惡魔城堡'},
-  {name:'黑魔女',   e:'🧙', hp:1020, atk:70, def:18, exp:350, g:110, z:'🏰 惡魔城堡'},
-  {name:'黑龍幼龍', e:'🦖', hp:1250, atk:82, def:22, exp:410, g:130, z:'🏰 惡魔城堡'},
-  {name:'邪神巨人', e:'🗿', hp:1500, atk:96, def:26, exp:490, g:155, z:'🏰 惡魔城堡'},
-  {name:'古代龍',   e:'🐲', hp:1900, atk:115,def:32, exp:600, g:190, z:'🔥 龍穴深淵'},
-  {name:'岩漿龍',   e:'🐉', hp:2300, atk:138,def:36, exp:730, g:230, z:'🔥 龍穴深淵'},
-  {name:'暗黑騎士', e:'🖤', hp:2800, atk:160,def:42, exp:880, g:280, z:'🔥 龍穴深淵'},
-  {name:'混沌惡魔', e:'😈', hp:3400, atk:188,def:48, exp:1060,g:340, z:'🔥 龍穴深淵'},
-  {name:'魔王',     e:'👹', hp:5000, atk:230,def:58, exp:1600,g:600, z:'🔥 龍穴深淵'},
+  // Zone 1: 🌸 粉紅草原
+  {name:'小蝸牛',   e:'🐌', hp:20,   atk:3,  def:0,  exp:10,  g:3,   z:'🌸 粉紅草原'},
+  {name:'小兔兔',   e:'🐰', hp:30,   atk:5,  def:0,  exp:15,  g:5,   z:'🌸 粉紅草原'},
+  {name:'呆呆雞',   e:'🐥', hp:42,   atk:7,  def:1,  exp:20,  g:6,   z:'🌸 粉紅草原'},
+  {name:'肥肥蛙',   e:'🐸', hp:58,   atk:9,  def:1,  exp:27,  g:8,   z:'🌸 粉紅草原'},
+  {name:'惡作劇貓', e:'😼', hp:75,   atk:11, def:2,  exp:35,  g:10,  z:'🌸 粉紅草原'},
+  // Zone 2: 🍭 糖果森林
+  {name:'搗蛋松鼠', e:'🐿️', hp:95,   atk:13, def:3,  exp:45,  g:14,  z:'🍭 糖果森林'},
+  {name:'毒蘑菇',   e:'🍄', hp:120,  atk:16, def:3,  exp:56,  g:17,  z:'🍭 糖果森林'},
+  {name:'刺蝟寶寶', e:'🦔', hp:150,  atk:19, def:5,  exp:68,  g:20,  z:'🍭 糖果森林'},
+  {name:'熊貓大王', e:'🐼', hp:185,  atk:16, def:9,  exp:80,  g:24,  z:'🍭 糖果森林'},
+  {name:'倉鼠暴徒', e:'🐹', hp:220,  atk:23, def:5,  exp:95,  g:28,  z:'🍭 糖果森林'},
+  // Zone 3: 🌊 泡泡海洋
+  {name:'螃蟹將軍', e:'🦀', hp:270,  atk:28, def:8,  exp:115, g:34,  z:'🌊 泡泡海洋'},
+  {name:'企鵝騎士', e:'🐧', hp:330,  atk:26, def:12, exp:135, g:40,  z:'🌊 泡泡海洋'},
+  {name:'鯊鯊',     e:'🦈', hp:400,  atk:33, def:10, exp:160, g:48,  z:'🌊 泡泡海洋'},
+  {name:'水母精靈', e:'🪼', hp:480,  atk:38, def:9,  exp:185, g:55,  z:'🌊 泡泡海洋'},
+  {name:'章魚博士', e:'🐙', hp:580,  atk:44, def:14, exp:215, g:65,  z:'🌊 泡泡海洋'},
+  // Zone 4: 🌙 月光城堡
+  {name:'狐狸公主', e:'🦊', hp:700,  atk:52, def:17, exp:255, g:80,  z:'🌙 月光城堡'},
+  {name:'狼人爵士', e:'🐺', hp:850,  atk:60, def:16, exp:300, g:95,  z:'🌙 月光城堡'},
+  {name:'吸血蝙蝠', e:'🦇', hp:1020, atk:70, def:18, exp:350, g:110, z:'🌙 月光城堡'},
+  {name:'惡靈貓王', e:'🐈‍⬛',hp:1250, atk:82, def:22, exp:410, g:130, z:'🌙 月光城堡'},
+  {name:'月之女巫', e:'🧙‍♀️',hp:1500, atk:96, def:26, exp:490, g:155, z:'🌙 月光城堡'},
+  // Zone 5: 🦄 彩虹彼端
+  {name:'獨角獸',   e:'🦄', hp:1900, atk:115,def:32, exp:600, g:190, z:'🦄 彩虹彼端'},
+  {name:'彩虹龍',   e:'🐲', hp:2300, atk:138,def:36, exp:730, g:230, z:'🦄 彩虹彼端'},
+  {name:'星空鳳凰', e:'🦅', hp:2800, atk:160,def:42, exp:880, g:280, z:'🦄 彩虹彼端'},
+  {name:'混沌貓咪', e:'😈', hp:3400, atk:188,def:48, exp:1060,g:340, z:'🦄 彩虹彼端'},
+  {name:'魔王大人', e:'👾', hp:5000, atk:230,def:58, exp:1600,g:600, z:'🦄 彩虹彼端'},
 ];
 
 const SKILLS = [
-  {id:'power', name:'強力一擊', e:'💥', desc:'3倍攻擊傷害',      cd:10, lv:1,  col:'#ff9800', fn:(g)=>pAtk(3)},
-  {id:'heal',  name:'治癒術',   e:'💚', desc:'恢復 40% 最大HP', cd:30, lv:5,  col:'#4caf50', fn:(g)=>{healPlayer(0.4);}},
-  {id:'fire',  name:'火焰拳',   e:'🔥', desc:'5倍攻擊，無視防禦',cd:20, lv:10, col:'#e040fb', fn:(g)=>pAtk(5,true)},
-  {id:'burst', name:'終極斬',   e:'⚡', desc:'10倍攻擊，必暴擊', cd:60, lv:20, col:'#ffd700', fn:(g)=>pAtk(10,false,true)},
+  {id:'power', name:'強力一擊', e:'💥', desc:'3倍攻擊傷害',      cd:10, lv:1,  col:'#f97316', fn:()=>pAtk(3)},
+  {id:'heal',  name:'治癒術',   e:'💚', desc:'恢復 40% 最大HP', cd:30, lv:5,  col:'#6ee7b7', fn:()=>healPlayer(0.4)},
+  {id:'fire',  name:'粉紅閃',   e:'💗', desc:'5倍攻擊，無視防禦',cd:20, lv:10, col:'#f472b6', fn:()=>pAtk(5,true)},
+  {id:'burst', name:'終極一擊', e:'⭐', desc:'10倍攻擊，必暴擊', cd:60, lv:20, col:'#fde68a', fn:()=>pAtk(10,false,true)},
 ];
 
 const SHOP = [
-  {id:'pot',  name:'HP藥水',  e:'🧪', desc:'立即回復 50% HP', price:20,  fx:'heal50'},
-  {id:'hpot', name:'大HP藥水',e:'⚗️', desc:'立即回復 100% HP',price:60,  fx:'heal100'},
-  {id:'sw1',  name:'鐵劍',    e:'⚔️', desc:'攻擊 +5',         price:30,  fx:'atk5'},
-  {id:'sw2',  name:'鋼劍',    e:'🗡️', desc:'攻擊 +15',        price:100, fx:'atk15'},
-  {id:'sw3',  name:'魔法劍',  e:'✨', desc:'攻擊 +40',        price:300, fx:'atk40'},
-  {id:'sh1',  name:'木盾',    e:'🛡️', desc:'防禦 +3',         price:25,  fx:'def3'},
-  {id:'sh2',  name:'鐵盾',    e:'🛡️', desc:'防禦 +10',        price:80,  fx:'def10'},
-  {id:'ar1',  name:'皮甲',    e:'🥋', desc:'最大HP +50',      price:40,  fx:'hp50'},
-  {id:'ar2',  name:'鐵甲',    e:'🪖', desc:'最大HP +150',     price:130, fx:'hp150'},
-  {id:'ar3',  name:'龍甲',    e:'🦺', desc:'最大HP +500',     price:500, fx:'hp500'},
+  {id:'pot',  name:'HP藥水',    e:'🍵', desc:'立即回復 50% HP', price:20,  fx:'heal50'},
+  {id:'hpot', name:'大HP藥水',  e:'🧃', desc:'立即回復 100% HP',price:60,  fx:'heal100'},
+  {id:'sw1',  name:'可愛小劍',  e:'⚔️', desc:'攻擊 +5',         price:30,  fx:'atk5'},
+  {id:'sw2',  name:'魔法棒',    e:'🪄', desc:'攻擊 +15',        price:100, fx:'atk15'},
+  {id:'sw3',  name:'星星劍',    e:'🌟', desc:'攻擊 +40',        price:300, fx:'atk40'},
+  {id:'sh1',  name:'蝴蝶結盾',  e:'🎀', desc:'防禦 +3',         price:25,  fx:'def3'},
+  {id:'sh2',  name:'花花盾牌',  e:'🌸', desc:'防禦 +10',        price:80,  fx:'def10'},
+  {id:'ar1',  name:'粉紅輕甲',  e:'💗', desc:'最大HP +50',      price:40,  fx:'hp50'},
+  {id:'ar2',  name:'玫瑰盔甲',  e:'🌹', desc:'最大HP +150',     price:130, fx:'hp150'},
+  {id:'ar3',  name:'彩虹神甲',  e:'🦄', desc:'最大HP +500',     price:500, fx:'hp500'},
 ];
 
 const MILESTONES = {
-  kills: {
-    10:  '💕 你已擊倒 10 隻怪獸了！好厲害！',
-    25:  '💕 25 連擊！你真的很勇喔！',
-    50:  '💕 50 隻！你是我心目中的大英雄！',
-    100: '💕 100 隻！我愛你！你超強的！',
-    200: '💕 200 隻！請問你是神嗎？！',
+  kills:{
+    10:  '💕 已擊倒 10 隻怪獸！超強的！',
+    25:  '🌸 25 連擊！你是我的英雄！',
+    50:  '✨ 50 隻了！真的超勇！',
+    100: '💝 100 隻！我好愛你喔！',
+    200: '🌟 200 隻！請問你是神嗎？！',
   },
-  lv: {
-    5:  '🌟 到達 Lv5！解鎖治癒術！繼續加油！',
-    10: '🌟 Lv10 了！解鎖火焰拳！你好猛！',
-    20: '🌟 Lv20！解鎖終極斬！你是最強的勇者！',
+  lv:{
+    5:  '🌸 到達 Lv5！解鎖治癒術！加油加油！',
+    10: '💗 Lv10！解鎖粉紅閃！你好猛！',
+    20: '⭐ Lv20！解鎖終極一擊！我愛你！',
     30: '🌟 Lv30！已經無法阻擋你了！',
   },
 };
 
 // ─── State ───────────────────────────────────────────────
 function freshG() {
-  return { lv:1, exp:0, maxHp:100, hp:100, bAtk:10, bDef:2, bonAtk:0, bonDef:0, gold:0, kills:0, wave:1,
-    cd:{power:0,heal:0,fire:0,burst:0} };
+  return {lv:1,exp:0,maxHp:100,hp:100,bAtk:10,bDef:2,bonAtk:0,bonDef:0,gold:0,kills:0,wave:1,
+    cd:{power:0,heal:0,fire:0,burst:0}};
 }
-
-let G = (() => { try { const d=JSON.parse(localStorage.getItem('hero2')); return d||freshG(); } catch(e){ return freshG(); } })();
-let M = null; // current monster
+let G = (()=>{ try{const d=JSON.parse(localStorage.getItem('hero2'));return d||freshG();}catch(e){return freshG();}})();
+let M = null;
 let paused = false;
-let mTimer = null, cdTimer = null, regenTimer = null;
-let curTab = 'b';
+let mTimer=null, cdTimer=null, regenTimer=null;
+let curTab='b';
 let notifiedKills = new Set(Object.keys(MILESTONES.kills).map(Number));
-let notifiedLv   = new Set(Object.keys(MILESTONES.lv).map(Number));
+let notifiedLv    = new Set(Object.keys(MILESTONES.lv).map(Number));
 
 // ─── Computed ─────────────────────────────────────────────
-const atk = () => G.bAtk + G.bonAtk;
-const def = () => G.bDef + G.bonDef;
-const expNeed = lv => Math.floor(100 * Math.pow(1.32, lv - 1));
+const atk    = () => G.bAtk + G.bonAtk;
+const def    = () => G.bDef + G.bonDef;
+const expNeed = lv => Math.floor(100 * Math.pow(1.32, lv-1));
 
 // ─── Monster ──────────────────────────────────────────────
 function makeMon(wave) {
-  const idx = (wave - 1) % MONS.length;
-  const cycle = Math.floor((wave - 1) / MONS.length);
-  const s = 1 + cycle * 2.8;
-  const b = { ...MONS[idx] };
+  const idx   = (wave-1) % MONS.length;
+  const cycle = Math.floor((wave-1) / MONS.length);
+  const s     = 1 + cycle * 2.8;
+  const b     = {...MONS[idx]};
   if (cycle > 0) {
     b.hp   = Math.round(b.hp   * s);
     b.atk  = Math.round(b.atk  * s);
     b.def  = Math.round(b.def  * s);
     b.exp  = Math.round(b.exp  * s);
     b.g    = Math.round(b.g    * s);
-    b.name = (cycle > 1 ? '強化' : '') + b.name;
+    b.name = (cycle > 1 ? '超強' : '強化') + b.name;
   }
-  return { ...b, maxHp: b.hp, curHp: b.hp };
+  return {...b, maxHp:b.hp, curHp:b.hp};
 }
 
 function spawnMon() {
   M = makeMon(G.wave);
   renderMon();
-  log('📍 出現了：' + M.name + ` (HP:${M.maxHp} 攻:${M.atk} 防:${M.def})`, 'sys');
+  log(`🌸 出現了：${M.name}！(HP:${M.maxHp})`, 'sys');
 }
 
 // ─── Player Attack ────────────────────────────────────────
 function pAtk(mul=1, nodef=false, fcrit=false) {
-  if (paused || !M || M.curHp <= 0) return;
+  if (paused || !M || M.curHp<=0) return;
   const rawDef = nodef ? 0 : M.def;
-  let dmg = Math.max(1, atk() * mul - rawDef);
-  const crit = fcrit || Math.random() < 0.1;
+  let dmg = Math.max(1, atk()*mul - rawDef);
+  const crit = fcrit || Math.random()<0.1;
   if (crit) dmg = Math.floor(dmg * 1.85);
 
   M.curHp = Math.max(0, M.curHp - dmg);
@@ -348,8 +372,8 @@ function pAtk(mul=1, nodef=false, fcrit=false) {
   const el = document.getElementById('m-emoji');
   el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
 
-  showPop(crit ? `💥 ${dmg}!` : String(dmg), crit ? '#ff4081' : '#ff8a80', true);
-  log(crit ? `💥 暴擊！對 ${M.name} 造成 ${dmg} 傷害！` : `⚔️ 對 ${M.name} 造成 ${dmg} 傷害`, crit ? 'crit' : 'hit');
+  showPop(crit ? `💥 ${dmg}!` : String(dmg), crit ? '#ff4081' : '#fca5a5', true);
+  log(crit ? `💥 暴擊！對 ${M.name} 造成 ${dmg} 傷害！` : `💖 對 ${M.name} 造成 ${dmg} 傷害`, crit ? 'crit' : 'hit');
 
   if (M.curHp <= 0) onMonDie();
 }
@@ -359,19 +383,19 @@ function useSkill(idx) {
   if (paused) return;
   const sk = SKILLS[idx];
   if (!sk) return;
-  if (G.lv < sk.lv) { log(`🔒 ${sk.name} 需要 Lv${sk.lv}`, 'miss'); return; }
-  if (G.cd[sk.id] > 0) { log(`⏳ ${sk.name} 冷卻中 ${Math.ceil(G.cd[sk.id])}s`, 'miss'); return; }
+  if (G.lv < sk.lv)        { log(`🔒 ${sk.name} 需要 Lv${sk.lv} 才能使用`, 'miss'); return; }
+  if (G.cd[sk.id] > 0)     { log(`⏳ ${sk.name} 冷卻中 ${Math.ceil(G.cd[sk.id])}s`, 'miss'); return; }
   G.cd[sk.id] = sk.cd;
   log(`✨ 使用「${sk.name}」！`, 'skill');
-  sk.fn(G);
-  renderQsk();
-  save();
+  sk.fn();
+  renderQsk(); save();
 }
 
 function healPlayer(pct) {
   const amt = Math.floor(G.maxHp * pct);
   G.hp = Math.min(G.maxHp, G.hp + amt);
-  showPop(`+${amt} HP`, '#69f0ae', false);
+  showPop(`+${amt}`, '#6ee7b7', false);
+  showHearts();
   log(`💚 恢復了 ${amt} HP！`, 'heal');
   renderPlayerHp();
 }
@@ -379,11 +403,11 @@ function healPlayer(pct) {
 // ─── Monster Attack ───────────────────────────────────────
 function startMTimer() {
   clearInterval(mTimer);
-  mTimer = setInterval(() => {
-    if (paused || !M || M.curHp <= 0) return;
+  mTimer = setInterval(()=>{
+    if (paused || !M || M.curHp<=0) return;
     const dmg = Math.max(1, M.atk - def());
     G.hp = Math.max(0, G.hp - dmg);
-    showPop(`-${dmg}`, '#ef5350', false);
+    showPop(`-${dmg}`, '#fca5a5', false);
     log(`🩸 ${M.name} 攻擊你，造成 ${dmg} 傷害`, 'dmg');
     renderPlayerHp();
     if (G.hp <= 0) onPlayerDie();
@@ -397,25 +421,19 @@ function onMonDie() {
   paused = true;
   document.getElementById('m-emoji').classList.add('dead');
 
-  G.kills++;
-  G.exp += M.exp;
-  G.gold += M.g;
-  log(`🏆 擊敗 ${M.name}！EXP +${M.exp}  💰 +${M.g}`, 'exp');
-  document.getElementById('el-kills').textContent = `擊殺 ${G.kills}`;
+  G.kills++; G.exp += M.exp; G.gold += M.g;
+  log(`🎉 擊敗 ${M.name}！EXP +${M.exp}  ✨ +${M.g}`, 'exp');
+  document.getElementById('el-kills').textContent = `✨ 擊殺 ${G.kills}`;
 
   const leveled = checkLvUp();
   checkMilestone();
-
   save(); renderAll();
 
   if (!leveled) {
-    setTimeout(() => {
-      G.wave++;
-      spawnMon();
+    setTimeout(()=>{
+      G.wave++; spawnMon();
       document.getElementById('m-emoji').classList.remove('dead');
-      paused = false;
-      startMTimer();
-      save();
+      paused = false; startMTimer(); save();
     }, 700);
   }
 }
@@ -424,8 +442,7 @@ function onMonDie() {
 function checkLvUp() {
   let leveled = false;
   while (G.exp >= expNeed(G.lv)) {
-    G.exp -= expNeed(G.lv);
-    G.lv++;
+    G.exp -= expNeed(G.lv); G.lv++;
     G.maxHp += 20; G.hp = G.maxHp;
     G.bAtk += 3; G.bDef += 1;
     leveled = true;
@@ -438,7 +455,7 @@ function showLvUp() {
   paused = true;
   const newSk = SKILLS.filter(s => s.lv === G.lv);
   let sub = `🎉 Lv.${G.lv} 達成！\nHP全回復！攻擊+3  防禦+1`;
-  if (newSk.length) sub += `\n\n✨ 解鎖新技能：${newSk.map(s => s.name).join('、')}！`;
+  if (newSk.length) sub += `\n\n✨ 解鎖新技能：${newSk.map(s=>s.name).join('、')}！`;
   document.getElementById('lv-sub').textContent = sub;
   document.getElementById('lv-ov').style.display = 'flex';
   renderAll();
@@ -446,48 +463,42 @@ function showLvUp() {
 
 function closeLvUp() {
   document.getElementById('lv-ov').style.display = 'none';
-  G.wave++;
-  spawnMon();
+  G.wave++; spawnMon();
   document.getElementById('m-emoji').classList.remove('dead');
-  paused = false;
-  startMTimer();
-  save();
+  paused = false; startMTimer(); save();
 }
 
 // ─── Player Died ──────────────────────────────────────────
 function onPlayerDie() {
-  clearInterval(mTimer);
-  paused = true;
+  clearInterval(mTimer); paused = true;
   document.getElementById('dead-sub').textContent =
-    `被 ${M.name} 打倒...\n已擊殺 ${G.kills} 隻怪獸\n復活後HP全回復，繼續戰鬥！`;
+    `被 ${M.name} 萌倒了...\n已擊殺 ${G.kills} 隻怪獸\n復活後HP全回復，繼續戰鬥！`;
   document.getElementById('dead-ov').style.display = 'flex';
 }
 
 function revive() {
   G.hp = G.maxHp;
   document.getElementById('dead-ov').style.display = 'none';
-  renderPlayerHp();
-  paused = false;
-  startMTimer();
+  renderPlayerHp(); paused = false; startMTimer();
 }
 
 // ─── Shop ─────────────────────────────────────────────────
 function buy(id) {
-  const item = SHOP.find(i => i.id === id);
+  const item = SHOP.find(i=>i.id===id);
   if (!item || G.gold < item.price) return;
   G.gold -= item.price;
   const fx = item.fx;
-  if (fx === 'heal50')  G.hp = Math.min(G.maxHp, G.hp + Math.floor(G.maxHp * 0.5));
-  else if (fx === 'heal100') G.hp = G.maxHp;
-  else if (fx === 'atk5')  G.bonAtk += 5;
-  else if (fx === 'atk15') G.bonAtk += 15;
-  else if (fx === 'atk40') G.bonAtk += 40;
-  else if (fx === 'def3')  G.bonDef += 3;
-  else if (fx === 'def10') G.bonDef += 10;
-  else if (fx === 'hp50')  { G.maxHp += 50;  G.hp += 50; }
-  else if (fx === 'hp150') { G.maxHp += 150; G.hp += 150; }
-  else if (fx === 'hp500') { G.maxHp += 500; G.hp += 500; }
-  log(`🛒 購買「${item.name}」！`, 'heal');
+  if      (fx==='heal50')  G.hp = Math.min(G.maxHp, G.hp + Math.floor(G.maxHp*0.5));
+  else if (fx==='heal100') G.hp = G.maxHp;
+  else if (fx==='atk5')    G.bonAtk += 5;
+  else if (fx==='atk15')   G.bonAtk += 15;
+  else if (fx==='atk40')   G.bonAtk += 40;
+  else if (fx==='def3')    G.bonDef += 3;
+  else if (fx==='def10')   G.bonDef += 10;
+  else if (fx==='hp50')  { G.maxHp += 50;  G.hp += 50; }
+  else if (fx==='hp150') { G.maxHp += 150; G.hp += 150; }
+  else if (fx==='hp500') { G.maxHp += 500; G.hp += 500; }
+  log(`🛍️ 購買了「${item.name}」！`, 'heal');
   save(); renderAll(); renderShop();
 }
 
@@ -496,24 +507,23 @@ function checkMilestone() {
   const km = MILESTONES.kills[G.kills];
   if (km && notifiedKills.has(G.kills)) { showToast(km); notifiedKills.delete(G.kills); }
   const lm = MILESTONES.lv[G.lv];
-  if (lm && notifiedLv.has(G.lv)) { showToast(lm); notifiedLv.delete(G.lv); }
+  if (lm && notifiedLv.has(G.lv))      { showToast(lm); notifiedLv.delete(G.lv); }
 }
 
-let toastTimer = null;
+let toastTimer=null;
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.style.display = 'block';
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.style.display = 'none', 3500);
+  toastTimer = setTimeout(()=> t.style.display='none', 3800);
 }
 
 // ─── HP Regen ─────────────────────────────────────────────
 function startRegen() {
   clearInterval(regenTimer);
-  regenTimer = setInterval(() => {
-    if (paused || G.hp <= 0 || G.hp >= G.maxHp) return;
-    const r = Math.max(1, Math.floor(G.maxHp * 0.005));
-    G.hp = Math.min(G.maxHp, G.hp + r);
+  regenTimer = setInterval(()=>{
+    if (paused || G.hp<=0 || G.hp>=G.maxHp) return;
+    G.hp = Math.min(G.maxHp, G.hp + Math.max(1, Math.floor(G.maxHp*0.005)));
     renderPlayerHp();
   }, 2000);
 }
@@ -521,12 +531,12 @@ function startRegen() {
 // ─── CD Tick ──────────────────────────────────────────────
 function startCdTick() {
   clearInterval(cdTimer);
-  cdTimer = setInterval(() => {
-    let ch = false;
+  cdTimer = setInterval(()=>{
+    let ch=false;
     for (const k of Object.keys(G.cd)) {
-      if (G.cd[k] > 0) { G.cd[k] = Math.max(0, G.cd[k] - 1); ch = true; }
+      if (G.cd[k]>0) { G.cd[k]=Math.max(0,G.cd[k]-1); ch=true; }
     }
-    if (ch) { renderQsk(); if (curTab === 's') renderSkills(); }
+    if (ch) { renderQsk(); if (curTab==='s') renderSkills(); }
   }, 1000);
 }
 
@@ -535,27 +545,27 @@ function renderAll() {
   document.getElementById('el-lv').textContent   = `Lv.${G.lv}`;
   document.getElementById('el-atk').textContent  = atk();
   document.getElementById('el-def').textContent  = def();
-  document.getElementById('el-gold').textContent = `💰 ${G.gold}`;
+  document.getElementById('el-gold').textContent = `✨ ${G.gold}`;
   document.getElementById('el-wave').textContent = G.wave;
-  document.getElementById('el-kills').textContent = `擊殺 ${G.kills}`;
+  document.getElementById('el-kills').textContent= `✨ 擊殺 ${G.kills}`;
   renderPlayerHp(); renderExpBar(); renderQsk();
 }
 
 function renderPlayerHp() {
-  const pct = Math.max(0, G.hp / G.maxHp * 100);
-  document.getElementById('hp-bar').style.width = pct + '%';
+  const pct = Math.max(0, G.hp/G.maxHp*100);
+  document.getElementById('hp-bar').style.width = pct+'%';
   document.getElementById('hp-num').textContent = `${G.hp}/${G.maxHp}`;
 }
 
 function renderExpBar() {
   const n = expNeed(G.lv);
-  document.getElementById('exp-bar').style.width = (Math.min(1, G.exp / n) * 100) + '%';
+  document.getElementById('exp-bar').style.width = (Math.min(1,G.exp/n)*100)+'%';
   document.getElementById('exp-num').textContent = `${G.exp}/${n}`;
 }
 
 function renderMonHp() {
-  const pct = Math.max(0, M.curHp / M.maxHp * 100);
-  document.getElementById('mhp-bar').style.width = pct + '%';
+  const pct = Math.max(0, M.curHp/M.maxHp*100);
+  document.getElementById('mhp-bar').style.width = pct+'%';
   document.getElementById('mhp-num').textContent = `${M.curHp}/${M.maxHp}`;
 }
 
@@ -571,98 +581,103 @@ function renderMon() {
 }
 
 function renderQsk() {
-  [0, 1].forEach(i => {
-    const sk = SKILLS[i];
-    const btn = document.getElementById('qs' + i);
-    const cd = Math.ceil(G.cd[sk.id] || 0);
+  [0,1].forEach(i=>{
+    const sk  = SKILLS[i];
+    const btn = document.getElementById('qs'+i);
+    const cd  = Math.ceil(G.cd[sk.id]||0);
     const locked = G.lv < sk.lv;
     btn.disabled = locked;
     if (locked) {
       btn.innerHTML = `🔒 ${sk.name}<br><small>Lv${sk.lv}</small>`;
-      btn.style.opacity = '0.4';
-    } else if (cd > 0) {
+      btn.style.opacity='0.38';
+    } else if (cd>0) {
       btn.innerHTML = `${sk.e} ${sk.name}<br><small>⏳${cd}s</small>`;
-      btn.style.opacity = '0.65';
-      btn.classList.add('cd');
+      btn.style.opacity='0.62'; btn.classList.add('cd');
     } else {
       btn.innerHTML = `${sk.e} ${sk.name}`;
-      btn.style.opacity = '1';
-      btn.classList.remove('cd');
+      btn.style.opacity='1'; btn.classList.remove('cd');
     }
   });
 }
 
 function renderSkills() {
-  document.getElementById('sk-grid').innerHTML = SKILLS.map((sk, i) => {
+  document.getElementById('sk-grid').innerHTML = SKILLS.map((sk,i)=>{
     const locked = G.lv < sk.lv;
-    const cd = Math.ceil(G.cd[sk.id] || 0);
-    return `<div class="sk-card ${locked?'locked':''}" onclick="useSkill(${i})" style="border-color:${sk.col}44">
+    const cd = Math.ceil(G.cd[sk.id]||0);
+    return `<div class="sk-card ${locked?'locked':''}" onclick="useSkill(${i})" style="border-color:${sk.col}55">
       <div class="sk-nm" style="color:${sk.col}">${sk.e} ${sk.name}</div>
       <div class="sk-desc">${sk.desc}</div>
-      <div class="sk-cd">${cd > 0 ? `⏳ 冷卻中 ${cd}s` : `冷卻 ${sk.cd}s`}</div>
+      <div class="sk-cd">${cd>0 ? `⏳ 冷卻中 ${cd}s` : `冷卻 ${sk.cd}s`}</div>
       ${locked ? `<div class="sk-lock">🔒 Lv${sk.lv} 解鎖</div>` : ''}
     </div>`;
   }).join('');
 }
 
 function renderShop() {
-  document.getElementById('shop-list').innerHTML = SHOP.map(it => `
-    <div class="sh-item ${G.gold < it.price ? 'poor' : ''}" onclick="buy('${it.id}')">
+  document.getElementById('shop-list').innerHTML = SHOP.map(it=>`
+    <div class="sh-item ${G.gold<it.price?'poor':''}" onclick="buy('${it.id}')">
       <div class="sh-ico">${it.e}</div>
       <div class="sh-info"><div class="sh-nm">${it.name}</div><div class="sh-desc">${it.desc}</div></div>
-      <div class="sh-price">💰 ${it.price}</div>
+      <div class="sh-price">✨ ${it.price}</div>
     </div>`).join('');
 }
 
 // ─── Tabs ─────────────────────────────────────────────────
 function switchTab(t) {
-  curTab = t;
-  const ids = ['b','s','p'];
-  const panIds = ['pan-b','pan-s','pan-p'];
-  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('on', ids[i] === t));
-  document.querySelectorAll('.panel').forEach((el, i) => el.classList.toggle('on', ids[i] === t));
-  if (t === 's') renderSkills();
-  if (t === 'p') renderShop();
+  curTab=t;
+  const ids=['b','s','p'], panIds=['pan-b','pan-s','pan-p'];
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',ids[i]===t));
+  document.querySelectorAll('.panel').forEach((el,i)=>el.classList.toggle('on',ids[i]===t));
+  if (t==='s') renderSkills();
+  if (t==='p') renderShop();
 }
 
 // ─── Floating popup ───────────────────────────────────────
 function showPop(txt, col, atMon) {
   const zone = document.getElementById('mzone');
-  const pop = document.createElement('div');
-  pop.className = 'pop'; pop.textContent = txt; pop.style.color = col;
-  pop.style.fontSize = txt.includes('!') ? '1.5em' : '1.1em';
-  const x = atMon ? zone.clientWidth/2 + (Math.random()-.5)*70 : zone.clientWidth/2 - 70 + (Math.random()-.5)*30;
-  const y = atMon ? zone.clientHeight * 0.38 : zone.clientHeight * 0.7;
-  pop.style.left = x + 'px'; pop.style.top = y + 'px';
+  const pop  = document.createElement('div');
+  pop.className='pop'; pop.textContent=txt; pop.style.color=col;
+  pop.style.fontSize = txt.includes('!')? '1.5em':'1.15em';
+  const x = atMon ? zone.clientWidth/2+(Math.random()-.5)*72 : zone.clientWidth/2-68+(Math.random()-.5)*28;
+  const y = atMon ? zone.clientHeight*0.38 : zone.clientHeight*0.72;
+  pop.style.left=x+'px'; pop.style.top=y+'px';
   zone.appendChild(pop);
-  setTimeout(() => pop.remove(), 820);
+  setTimeout(()=>pop.remove(), 870);
+}
+
+function showHearts() {
+  const zone = document.getElementById('mzone');
+  ['💕','💗','💖'].forEach((h,i)=>{
+    const el = document.createElement('div');
+    el.className='hearts'; el.textContent=h;
+    el.style.left=(zone.clientWidth/2 + (i-1)*28)+'px';
+    el.style.top=(zone.clientHeight*0.5)+'px';
+    el.style.animationDelay=(i*0.1)+'s';
+    zone.appendChild(el);
+    setTimeout(()=>el.remove(), 1200);
+  });
 }
 
 // ─── Log ──────────────────────────────────────────────────
-function log(msg, cls = '') {
-  const el = document.getElementById('log');
+function log(msg, cls='') {
+  const el   = document.getElementById('log');
   const line = document.createElement('div');
-  line.className = 'll ' + cls; line.textContent = msg;
+  line.className='ll '+cls; line.textContent=msg;
   el.appendChild(line);
-  while (el.children.length > 25) el.removeChild(el.firstChild);
+  while (el.children.length>25) el.removeChild(el.firstChild);
   el.scrollTop = el.scrollHeight;
 }
 
 // ─── Save / Load ──────────────────────────────────────────
-function save() { try { localStorage.setItem('hero2', JSON.stringify(G)); } catch(e){} }
+function save() { try{localStorage.setItem('hero2',JSON.stringify(G));}catch(e){} }
 
 // ─── Init ─────────────────────────────────────────────────
 function init() {
-  // Make sure G.cd exists (backwards compat)
-  if (!G.cd) G.cd = {power:0, heal:0, fire:0, burst:0};
-  if (!G.wave || G.wave < 1) G.wave = 1;
-
-  spawnMon();
-  renderAll();
-  startMTimer();
-  startCdTick();
-  startRegen();
-  log(`⚔️ Lv.${G.lv} 的勇者繼續冒險！已到達第 ${G.wave} 波！`);
+  if (!G.cd)   G.cd={power:0,heal:0,fire:0,burst:0};
+  if (!G.wave||G.wave<1) G.wave=1;
+  spawnMon(); renderAll();
+  startMTimer(); startCdTick(); startRegen();
+  log(`🌸 Lv.${G.lv} 的勇者出發！第 ${G.wave} 波冒險繼續！`);
 }
 
 init();
