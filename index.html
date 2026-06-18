@@ -5,97 +5,86 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="排版計算">
+<meta name="apple-mobile-web-app-title" content="怎麼裁料比較省">
 <meta name="theme-color" content="#1a1a2e">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<title>卡點西德排版計算</title>
+<title>怎麼裁料比較省小工具</title>
 <style>
-/* ===== Reset & Base ===== */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
-  --bg:#1a1a2e; --bg2:#16213e; --bg3:#0f3460;
-  --blue:#00d4ff; --yellow:#ffd93d; --red:#ff6b6b; --green:#6bcb77; --orange:#ff922b;
-  --text:#e0e0e0; --muted:#888; --border:#2a2a4a;
-  --radius:12px; --bar:56px;
+  --bg:#1a1a2e;--bg2:#16213e;--bg3:#0f3460;
+  --blue:#00d4ff;--yellow:#ffd93d;--red:#ff6b6b;--green:#6bcb77;--orange:#ff922b;--purple:#cc5de8;
+  --text:#e0e0e0;--muted:#888;--border:#2a2a4a;
+  --radius:12px;--bar:68px;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvetica Neue',Arial,sans-serif;overflow:hidden;}
-
-/* ===== Layout ===== */
 #app{display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;position:relative;}
 #header{background:var(--bg2);padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
 #header h1{font-size:1.05em;color:var(--blue);letter-spacing:1px;}
 #header .sub{font-size:0.72em;color:var(--muted);margin-top:2px;}
+.notice{font-size:0.68em;color:#ffd93d;margin-top:5px;opacity:0.85;}
 #content{flex:1;overflow-y:auto;padding:14px;padding-bottom:calc(var(--bar)+16px);}
 #navbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--bar);background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:100;}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:0.62em;color:var(--muted);cursor:pointer;transition:color 0.2s;border:none;background:none;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:0.72em;color:var(--muted);cursor:pointer;transition:color 0.2s;border:none;background:none;}
 .nav-btn.active{color:var(--blue);}
-.nav-btn svg{width:22px;height:22px;}
+.nav-btn.active svg{filter:drop-shadow(0 0 4px var(--blue));}
+.nav-btn svg{width:26px;height:26px;}
 .page{display:none;}
 .page.active{display:block;}
 
-/* ===== 料單輸入 ===== */
-.add-row{display:flex;gap:8px;margin-bottom:14px;align-items:flex-end;}
-.add-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:0.9em;width:100%;text-align:center;}
-.add-row input:focus{outline:none;border-color:var(--blue);}
+/* 料單輸入 */
+.add-row{display:flex;gap:6px;margin-bottom:14px;align-items:flex-end;}
+.add-row .field{flex:1;}
 .add-row label{font-size:0.68em;color:var(--muted);display:block;margin-bottom:4px;text-align:center;}
+.add-row input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 6px;color:var(--text);font-size:0.9em;text-align:center;}
+.add-row input:focus{outline:none;border-color:var(--blue);}
+.add-row .sep{display:flex;align-items:center;padding-bottom:2px;color:var(--muted);font-size:0.9em;}
 .btn{border:none;border-radius:8px;padding:10px 14px;font-size:0.85em;cursor:pointer;font-weight:bold;transition:opacity 0.2s;}
 .btn:active{opacity:0.7;}
 .btn-blue{background:var(--blue);color:#000;}
-.btn-red{background:var(--red);color:#000;}
 .btn-yellow{background:var(--yellow);color:#000;}
 .btn-ghost{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
-.btn-sm{padding:6px 10px;font-size:0.75em;}
-
 .piece-list{display:flex;flex-direction:column;gap:6px;}
 .piece-item{background:var(--bg2);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;border:1px solid var(--border);}
 .piece-info{flex:1;}
-.piece-dim{font-size:0.92em;font-weight:bold;color:var(--text);}
+.piece-dim{font-size:0.92em;font-weight:bold;}
 .piece-qty{font-size:0.72em;color:var(--muted);margin-top:2px;}
 .piece-actions{display:flex;gap:6px;}
 .icon-btn{background:none;border:none;cursor:pointer;padding:4px;border-radius:6px;color:var(--muted);font-size:1.1em;}
 .icon-btn:active{background:var(--bg3);}
-
 .empty-hint{text-align:center;color:var(--muted);font-size:0.82em;padding:40px 0;}
+.calc-bar{position:sticky;bottom:calc(var(--bar)+8px);left:0;right:0;padding:8px 0 0;background:linear-gradient(transparent,var(--bg) 40%);}
 
-/* ===== 結果頁 ===== */
+/* 結果 */
 .summary-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .stat-card{background:var(--bg2);border-radius:var(--radius);padding:14px;text-align:center;border:1px solid var(--border);}
 .stat-val{font-size:1.9em;font-weight:bold;color:var(--blue);}
 .stat-val.red{color:var(--red);}
 .stat-lbl{font-size:0.7em;color:var(--muted);margin-top:3px;}
-
 .section-card{background:var(--bg2);border-radius:var(--radius);padding:14px;margin-bottom:12px;border:1px solid var(--border);}
-.section-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.section-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
 .badge{border-radius:20px;padding:3px 10px;font-size:0.75em;font-weight:bold;}
 .badge-blue{background:var(--blue);color:#000;}
 .badge-red{background:var(--red);color:#000;}
 .section-sub{font-size:0.78em;color:var(--muted);}
-
-.strip-item{background:var(--bg3);border-radius:8px;padding:8px 10px;margin-bottom:6px;border-left:3px solid var(--blue);display:flex;justify-content:space-between;align-items:center;}
-.strip-item.paired{border-left-color:var(--yellow);background:#1a2a10;}
-.strip-item.split{border-left-color:var(--orange);background:#1a120a;}
+.strip-item{background:var(--bg3);border-radius:8px;padding:8px 10px;margin-bottom:6px;border-left:3px solid var(--blue);display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.strip-item.paired{border-left-color:var(--yellow);background:#1a2510;}
+.strip-item.cut{border-left-color:var(--purple);background:#1a0f2a;}
 .strip-item.three{border-left-color:var(--red);background:#1a0f0f;}
 .strip-lbl{font-size:0.75em;color:#ccc;flex:1;}
 .strip-sub{font-size:0.65em;color:var(--muted);margin-top:2px;}
-.strip-h{font-weight:bold;font-size:0.82em;white-space:nowrap;margin-left:8px;}
+.strip-h{font-weight:bold;font-size:0.82em;white-space:nowrap;}
 .strip-item .strip-h{color:var(--blue);}
 .strip-item.paired .strip-h{color:var(--yellow);}
-.strip-item.split .strip-h{color:var(--orange);}
+.strip-item.cut .strip-h{color:var(--purple);}
 .strip-item.three .strip-h{color:var(--red);}
-
 .tag{display:inline-block;border-radius:4px;font-size:0.65em;padding:1px 5px;margin-left:4px;vertical-align:middle;}
 .tag-yellow{background:#ffd93d22;color:var(--yellow);border:1px solid #ffd93d55;}
-.tag-orange{background:#ff922b22;color:var(--orange);border:1px solid #ff922b55;}
+.tag-purple{background:#cc5de822;color:var(--purple);border:1px solid #cc5de855;}
+.info-tip{background:#0a1a2a;border:1px solid #00d4ff33;border-radius:8px;padding:10px;margin-bottom:12px;font-size:0.73em;color:var(--muted);line-height:1.8;}
 
-.info-tip{background:#0a1a2a;border:1px solid #00d4ff33;border-radius:8px;padding:10px;margin-bottom:12px;font-size:0.73em;color:var(--muted);line-height:1.7;}
-
-.warn-card{background:#1a100a;border:1px solid #ff8c00;border-radius:var(--radius);padding:12px;margin-bottom:12px;}
-.warn-card h3{color:var(--orange);font-size:0.8em;margin-bottom:6px;}
-.warn-line{font-size:0.73em;color:#ccc;padding:3px 0;border-bottom:1px solid #2a1a0a;}
-.warn-line:last-child{border-bottom:none;}
-
-/* ===== 視覺化 ===== */
+/* 視覺化 */
 .viz-tabs{display:flex;gap:6px;margin-bottom:10px;}
 .viz-tab{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-size:0.78em;cursor:pointer;text-align:center;font-weight:bold;}
 .viz-tab.active{background:var(--blue);color:#000;border-color:var(--blue);}
@@ -105,7 +94,7 @@ canvas{display:block;}
 .legend-item{display:flex;align-items:center;gap:3px;font-size:0.68em;color:var(--muted);}
 .legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
 
-/* ===== Modal 編輯 ===== */
+/* Modal */
 .overlay{position:fixed;inset:0;background:#000a;z-index:200;display:flex;align-items:flex-end;justify-content:center;}
 .overlay.hidden{display:none;}
 .modal{background:var(--bg2);border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;border-top:1px solid var(--border);}
@@ -117,54 +106,35 @@ canvas{display:block;}
 .modal-field input:focus{outline:none;border-color:var(--blue);}
 .modal-actions{display:flex;gap:8px;margin-top:4px;}
 .modal-actions .btn{flex:1;}
-
-/* ===== 計算按鈕 ===== */
-.calc-bar{position:sticky;bottom:calc(var(--bar)+8px);left:0;right:0;padding:8px 0 0;background:linear-gradient(transparent,var(--bg) 40%);}
 </style>
 </head>
 <body>
 <div id="app">
   <div id="header">
-    <h1>📐 卡點西德排版計算</h1>
-    <div class="sub">四尺 121.2cm｜三尺 90.9cm</div>
+    <h1>📐 怎麼裁料比較省小工具</h1>
+    <div class="sub">輸入尺寸自動排版，裁料最省</div>
+    <div class="notice">🎙️ 此工具小幸還在設計測試階段，歡迎到直播間支持斗內</div>
   </div>
-
   <div id="content">
     <!-- 料單頁 -->
     <div class="page active" id="page-input">
       <div class="add-row">
-        <div>
-          <label>寬(cm)</label>
-          <input type="number" id="in-w" placeholder="寬" min="1" inputmode="decimal">
-        </div>
-        <div style="display:flex;align-items:center;padding-bottom:2px;color:var(--muted);">×</div>
-        <div>
-          <label>高(cm)</label>
-          <input type="number" id="in-h" placeholder="高" min="1" inputmode="decimal">
-        </div>
-        <div>
-          <label>數量</label>
-          <input type="number" id="in-q" placeholder="張" min="1" value="1" inputmode="numeric" style="width:56px;">
-        </div>
-        <div style="padding-bottom:2px;">
-          <label style="visibility:hidden;">加</label>
-          <button class="btn btn-blue" onclick="addPiece()">＋</button>
-        </div>
+        <div class="field"><label>寬(cm)</label><input type="number" id="in-w" placeholder="寬" min="1" inputmode="decimal"></div>
+        <div class="sep">×</div>
+        <div class="field"><label>高(cm)</label><input type="number" id="in-h" placeholder="高" min="1" inputmode="decimal"></div>
+        <div class="field" style="max-width:60px;"><label>數量</label><input type="number" id="in-q" placeholder="張" min="1" value="1" inputmode="numeric"></div>
+        <div style="padding-bottom:2px;"><label style="visibility:hidden">加</label><button class="btn btn-blue" onclick="addPiece()">＋</button></div>
       </div>
-
       <div id="piece-list" class="piece-list"></div>
       <div id="empty-hint" class="empty-hint">尚未輸入任何尺寸<br>從上方新增料單</div>
-
       <div class="calc-bar">
         <button class="btn btn-yellow" style="width:100%;padding:13px;" onclick="goCalc()">🔢 計算排版</button>
       </div>
     </div>
-
     <!-- 結果頁 -->
     <div class="page" id="page-result">
       <div id="result-content"><div class="empty-hint">請先在料單頁輸入尺寸並按計算</div></div>
     </div>
-
     <!-- 視覺化頁 -->
     <div class="page" id="page-viz">
       <div class="viz-tabs">
@@ -176,24 +146,19 @@ canvas{display:block;}
       <div class="legend-wrap" id="viz-legend"></div>
     </div>
   </div>
-
   <nav id="navbar">
     <button class="nav-btn active" onclick="showPage('input',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-      料單
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>料單
     </button>
     <button class="nav-btn" onclick="showPage('result',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      結果
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>結果
     </button>
     <button class="nav-btn" onclick="showPage('viz',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      排版圖
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>排版圖
     </button>
   </nav>
 </div>
 
-<!-- 編輯 Modal -->
 <div class="overlay hidden" id="edit-overlay" onclick="closeEdit(event)">
   <div class="modal">
     <h2>✏️ 編輯料單</h2>
@@ -211,25 +176,20 @@ canvas{display:block;}
 </div>
 
 <script>
-// ===== 常數 =====
-const FOUR_W = 121.2, THREE_W = 90.9;
-const COLORS = ['#00d4ff','#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b','#cc5de8','#20c997','#f06595','#74c0fc','#a9e34b','#ffa94d','#e599f7','#63e6be','#ffec99','#a5d8ff'];
+const FOUR_W=121.2, THREE_W=90.9;
+const COLORS=['#00d4ff','#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b','#cc5de8','#20c997','#f06595','#74c0fc','#a9e34b','#ffa94d','#e599f7','#63e6be','#ffec99','#a5d8ff','#ff8787','#94d82d'];
 
-// ===== 狀態 =====
-let pieces = JSON.parse(localStorage.getItem('vinyl-pieces') || '[]');
-let calcData = null;
-let editIdx = -1;
-let vizMode = 'four';
+let pieces=JSON.parse(localStorage.getItem('vinyl-pieces')||'[]');
+let calcData=null, editIdx=-1, vizMode='four';
 
-// ===== 料單 =====
-function savePieces() { localStorage.setItem('vinyl-pieces', JSON.stringify(pieces)); }
+function savePieces(){localStorage.setItem('vinyl-pieces',JSON.stringify(pieces));}
 
-function addPiece() {
-  const w = parseFloat(document.getElementById('in-w').value);
-  const h = parseFloat(document.getElementById('in-h').value);
-  const q = parseInt(document.getElementById('in-q').value) || 1;
-  if(!w || !h || w<=0 || h<=0) { alert('請輸入正確的寬和高'); return; }
-  pieces.push({w, h, q});
+function addPiece(){
+  const w=parseFloat(document.getElementById('in-w').value);
+  const h=parseFloat(document.getElementById('in-h').value);
+  const q=parseInt(document.getElementById('in-q').value)||1;
+  if(!w||!h||w<=0||h<=0){alert('請輸入正確的寬和高');return;}
+  pieces.push({w,h,q});
   savePieces();
   document.getElementById('in-w').value='';
   document.getElementById('in-h').value='';
@@ -237,42 +197,36 @@ function addPiece() {
   renderList();
 }
 
-function deletePiece(i) {
-  pieces.splice(i,1);
-  savePieces();
-  renderList();
-}
+function deletePiece(i){pieces.splice(i,1);savePieces();renderList();}
 
-function openEdit(i) {
-  editIdx = i;
-  const p = pieces[i];
-  document.getElementById('edit-w').value = p.w;
-  document.getElementById('edit-h').value = p.h;
-  document.getElementById('edit-q').value = p.q;
+function openEdit(i){
+  editIdx=i;
+  const p=pieces[i];
+  document.getElementById('edit-w').value=p.w;
+  document.getElementById('edit-h').value=p.h;
+  document.getElementById('edit-q').value=p.q;
   document.getElementById('edit-overlay').classList.remove('hidden');
 }
-
-function closeEdit(e) {
-  if(e && e.target !== document.getElementById('edit-overlay')) return;
+function closeEdit(e){
+  if(e&&e.target!==document.getElementById('edit-overlay'))return;
   document.getElementById('edit-overlay').classList.add('hidden');
 }
-
-function saveEdit() {
-  const w = parseFloat(document.getElementById('edit-w').value);
-  const h = parseFloat(document.getElementById('edit-h').value);
-  const q = parseInt(document.getElementById('edit-q').value) || 1;
-  if(!w||!h||w<=0||h<=0) { alert('請輸入正確數值'); return; }
-  pieces[editIdx] = {w,h,q};
+function saveEdit(){
+  const w=parseFloat(document.getElementById('edit-w').value);
+  const h=parseFloat(document.getElementById('edit-h').value);
+  const q=parseInt(document.getElementById('edit-q').value)||1;
+  if(!w||!h||w<=0||h<=0){alert('請輸入正確數值');return;}
+  pieces[editIdx]={w,h,q};
   savePieces();
   document.getElementById('edit-overlay').classList.add('hidden');
   renderList();
 }
 
-function renderList() {
-  const list = document.getElementById('piece-list');
-  const hint = document.getElementById('empty-hint');
-  hint.style.display = pieces.length ? 'none' : 'block';
-  list.innerHTML = pieces.map((p,i) => `
+function renderList(){
+  const list=document.getElementById('piece-list');
+  const hint=document.getElementById('empty-hint');
+  hint.style.display=pieces.length?'none':'block';
+  list.innerHTML=pieces.map((p,i)=>`
     <div class="piece-item">
       <div class="piece-info">
         <div class="piece-dim">${p.w} × ${p.h} cm</div>
@@ -282,96 +236,118 @@ function renderList() {
         <button class="icon-btn" onclick="openEdit(${i})">✏️</button>
         <button class="icon-btn" onclick="deletePiece(${i})">🗑️</button>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-// ===== 計算 =====
-function expandPieces() {
-  const all = [];
-  pieces.forEach(p => {
-    for(let i=0;i<p.q;i++) all.push({w:p.w, h:p.h, label:`${p.w}×${p.h}`});
-  });
-  return all;
-}
-
-function calculate() {
-  const all = expandPieces();
-  const sixtyPool=[], threePool=[], fourSingle=[], needSplit=[];
-
-  all.forEach(p => {
-    const {w,h} = p;
-    const minE=Math.min(w,h), maxE=Math.max(w,h);
-    const has60 = (w===60||h===60);
-    if(has60) {
-      const len = w===60?h:w;
-      sixtyPool.push({...p, useW:60, useH:len});
-    } else if(minE<=FOUR_W) {
-      if(minE<=THREE_W) threePool.push({...p, useW:minE, useH:maxE});
-      else fourSingle.push({...p, useW:minE, useH:maxE});
-    } else {
-      needSplit.push({...p, useW:minE, useH:maxE});
-    }
-  });
-
-  // 60並排
-  sixtyPool.sort((a,b)=>b.useH-a.useH);
-  const fourPaired=[];
-  const used=new Set();
-  for(let i=0;i<sixtyPool.length;i++){
-    if(used.has(i)) continue;
-    const a=sixtyPool[i];
-    let bestJ=-1, bestDiff=Infinity;
-    for(let j=i+1;j<sixtyPool.length;j++){
-      if(used.has(j)) continue;
-      const d=Math.abs(a.useH-sixtyPool[j].useH);
-      if(d<bestDiff){bestDiff=d;bestJ=j;}
-    }
-    if(bestJ!==-1){
-      const b=sixtyPool[bestJ];
-      used.add(i);used.add(bestJ);
-      fourPaired.push({height:Math.max(a.useH,b.useH),usedW:120,paired:true,items:[{...a,x:0},{...b,x:60}]});
-    } else {
-      used.add(i);
-      fourPaired.push({height:a.useH,usedW:60,paired:false,items:[{...a,x:0}]});
-    }
+// ===== 切割函數 =====
+// 把一張料切成可以放進 rollW 的片段
+// 沿寬方向切：每段寬度 <= rollW，高度不變
+// 回傳 [{useW, useH, label, isCut, cutFrom}]
+function slicePiece(p, rollW) {
+  const {w,h,label} = p;
+  const minE=Math.min(w,h), maxE=Math.max(w,h);
+  // useW=沿捲料寬方向, useH=沿長度方向
+  // 先決定方向：讓 useW <= rollW，useH 是長度
+  // 如果兩邊都超，就強制用短邊對齊，切長邊
+  let useW, useH;
+  if(minE<=rollW){
+    useW=minE; useH=maxE;
+    return [{useW,useH,label,isCut:false,cutFrom:null}];
   }
-
-  const fourSingleStrips = packStrips(fourSingle, FOUR_W);
-  const threeStrips = packStrips(threePool, THREE_W);
-  const splitStrips = needSplit.map(p=>({height:p.useH,usedW:p.useW,paired:false,needSplit:true,items:[{...p,x:0}]}));
-
-  const allFour = [...fourPaired, ...fourSingleStrips, ...splitStrips];
-  return {
-    allFour, threeStrips,
-    fourTotal: allFour.reduce((s,r)=>s+r.height,0),
-    threeTotal: threeStrips.reduce((s,r)=>s+r.height,0),
-    needSplit,
-    pairedCount: fourPaired.filter(s=>s.paired).length
-  };
+  // 兩邊都超 rollW：沿短邊方向切，每段寬度 = rollW，高度 = maxE
+  // 切成幾段？
+  const segments=[];
+  let remaining=minE;
+  let segNum=1;
+  while(remaining>0.1){
+    const segW=Math.min(remaining,rollW);
+    segments.push({
+      useW:segW,
+      useH:maxE,
+      label:`${label}`,
+      isCut:true,
+      cutFrom:label,
+      segNum,
+      totalSegs:Math.ceil(minE/rollW)
+    });
+    remaining-=segW;
+    segNum++;
+  }
+  return segments;
 }
 
-function packStrips(pieces, rollW) {
-  const sorted=[...pieces].sort((a,b)=>b.useH-a.useH);
+// ===== 主計算 =====
+function calculate(){
+  // 展開所有片
+  const raw=[];
+  pieces.forEach(p=>{
+    for(let i=0;i<p.q;i++) raw.push({w:p.w,h:p.h,label:`${p.w}×${p.h}`});
+  });
+
+  // 每張料先決定用四尺還是三尺
+  // 規則：短邊<=三尺 → 三尺；短邊<=四尺 → 四尺；都超 → 切割後放四尺
+  const fourItems=[], threeItems=[];
+
+  raw.forEach(p=>{
+    const minE=Math.min(p.w,p.h);
+    if(minE<=THREE_W){
+      // 三尺可放
+      threeItems.push({useW:minE,useH:Math.max(p.w,p.h),label:p.label,isCut:false});
+    } else if(minE<=FOUR_W){
+      // 四尺才放得下
+      fourItems.push({useW:minE,useH:Math.max(p.w,p.h),label:p.label,isCut:false});
+    } else {
+      // 兩邊都超四尺 → 切割
+      const segs=slicePiece(p,FOUR_W);
+      segs.forEach(s=>fourItems.push(s));
+    }
+  });
+
+  // 排版：貪婪並排，把 useW 小的盡量湊在一起
+  const fourStrips=greedyPack(fourItems,FOUR_W);
+  const threeStrips=greedyPack(threeItems,THREE_W);
+
+  const fourTotal=fourStrips.reduce((s,r)=>s+r.height,0);
+  const threeTotal=threeStrips.reduce((s,r)=>s+r.height,0);
+  const cutCount=fourItems.filter(i=>i.isCut).length;
+
+  return {fourStrips,threeStrips,fourTotal,threeTotal,cutCount};
+}
+
+// 貪婪並排：盡量讓每行塞最多張
+function greedyPack(items,rollW){
+  // 按高度降序，高度相同按寬度升序（方便湊對）
+  const sorted=[...items].sort((a,b)=>b.useH-a.useH||a.useW-b.useW);
   const strips=[];
-  sorted.forEach(p=>{
-    let placed=false;
-    for(const s of strips){
-      if(s.height>=p.useH && s.usedW+p.useW<=rollW){
-        s.items.push({...p,x:s.usedW});
-        s.usedW+=p.useW;placed=true;break;
+  const used=new Set();
+
+  for(let i=0;i<sorted.length;i++){
+    if(used.has(i)) continue;
+    const a=sorted[i];
+    used.add(i);
+    const strip={height:a.useH, usedW:a.useW, items:[{...a,x:0}], paired:false};
+
+    // 找還能塞進這行的料（高度<=行高，剩餘寬度夠）
+    for(let j=i+1;j<sorted.length;j++){
+      if(used.has(j)) continue;
+      const b=sorted[j];
+      if(b.useH<=strip.height && strip.usedW+b.useW<=rollW){
+        strip.items.push({...b,x:strip.usedW});
+        strip.usedW+=b.useW;
+        strip.paired=true;
+        used.add(j);
       }
     }
-    if(!placed) strips.push({height:p.useH,items:[{...p,x:0}],usedW:p.useW,paired:false});
-  });
+    strips.push(strip);
+  }
   return strips;
 }
 
 // ===== 渲染結果 =====
-function renderResult() {
-  const d = calcData;
+function renderResult(){
+  const d=calcData;
   if(!d){document.getElementById('result-content').innerHTML='<div class="empty-hint">請先輸入料單並計算</div>';return;}
-  const {allFour, threeStrips, fourTotal, threeTotal, needSplit, pairedCount} = d;
+  const{fourStrips,threeStrips,fourTotal,threeTotal,cutCount}=d;
   let html='';
 
   html+=`<div class="summary-row">
@@ -380,35 +356,25 @@ function renderResult() {
   </div>`;
 
   html+=`<div class="info-tip">
-    🟡 黃色 = 60+60 並排（共 ${pairedCount} 行）<br>
+    🟡 黃色 = 多張並排（省料）<br>
     🔵 藍色 = 四尺單張&nbsp;&nbsp;🔴 紅色 = 三尺<br>
-    🟠 橘色 = 超規格（需拼接）<br>
+    🟣 紫色 = 超規格已自動切割（共 ${cutCount} 片）<br>
     建議實際購買加 10% 損耗
   </div>`;
 
-  if(needSplit.length>0){
-    html+=`<div class="warn-card"><h3>⚠️ 超規格料（需拼接）</h3>`;
-    const g={};
-    needSplit.forEach(p=>{g[p.label]=(g[p.label]||0)+1;});
-    Object.entries(g).forEach(([lbl,cnt])=>{
-      const [ww,hh]=lbl.split('×').map(Number);
-      const minE=Math.min(ww,hh);
-      html+=`<div class="warn-line">• ${lbl} × ${cnt}張｜短邊 ${minE}cm 超出四尺 ${(minE-FOUR_W).toFixed(1)}cm</div>`;
-    });
-    html+=`</div>`;
-  }
-
   // 四尺
   html+=`<div class="section-card">
-    <div class="section-head"><span class="badge badge-blue">四尺 121.2cm</span><span class="section-sub">${allFour.length} 行 / ${(fourTotal/100).toFixed(2)} m</span></div>`;
-  allFour.forEach((s,i)=>{
-    const cls=s.paired?'paired':s.needSplit?'split':'';
-    const labels=s.items.map(it=>it.label).join(' ＋ ');
-    const tag=s.paired?'<span class="tag tag-yellow">並排</span>':s.needSplit?'<span class="tag tag-orange">拼接</span>':'';
+    <div class="section-head"><span class="badge badge-blue">四尺 121.2cm</span><span class="section-sub">${fourStrips.length} 行 / ${(fourTotal/100).toFixed(2)} m</span></div>`;
+  fourStrips.forEach((s,i)=>{
+    const isPaired=s.items.length>1;
+    const hasCut=s.items.some(it=>it.isCut);
+    const cls=hasCut?'cut':isPaired?'paired':'';
+    const labels=s.items.map(it=>it.isCut?`${it.label}(切)`:it.label).join(' ＋ ');
+    const tag=hasCut?'<span class="tag tag-purple">含切割</span>':isPaired?'<span class="tag tag-yellow">並排</span>':'';
     html+=`<div class="strip-item ${cls}">
-      <div class="flex-col">
+      <div style="flex:1">
         <div class="strip-lbl">行${i+1}：${labels}${tag}</div>
-        <div class="strip-sub">寬 ${s.usedW.toFixed(0)}/${FOUR_W}cm｜${s.items.length}張</div>
+        <div class="strip-sub">寬 ${s.usedW.toFixed(1)}/${FOUR_W}cm｜${s.items.length}張</div>
       </div>
       <div class="strip-h">${s.height}cm</div>
     </div>`;
@@ -416,19 +382,22 @@ function renderResult() {
   html+=`</div>`;
 
   // 三尺
-  html+=`<div class="section-card">
-    <div class="section-head"><span class="badge badge-red">三尺 90.9cm</span><span class="section-sub">${threeStrips.length} 行 / ${(threeTotal/100).toFixed(2)} m</span></div>`;
-  threeStrips.forEach((s,i)=>{
-    const labels=s.items.map(it=>it.label).join('、');
-    html+=`<div class="strip-item three">
-      <div>
-        <div class="strip-lbl">行${i+1}：${labels}</div>
-        <div class="strip-sub">寬 ${s.usedW.toFixed(1)}/${THREE_W}cm｜${s.items.length}張</div>
-      </div>
-      <div class="strip-h">${s.height}cm</div>
-    </div>`;
-  });
-  html+=`</div>`;
+  if(threeStrips.length>0){
+    html+=`<div class="section-card">
+      <div class="section-head"><span class="badge badge-red">三尺 90.9cm</span><span class="section-sub">${threeStrips.length} 行 / ${(threeTotal/100).toFixed(2)} m</span></div>`;
+    threeStrips.forEach((s,i)=>{
+      const isPaired=s.items.length>1;
+      const labels=s.items.map(it=>it.label).join('、');
+      html+=`<div class="strip-item three">
+        <div style="flex:1">
+          <div class="strip-lbl">行${i+1}：${labels}${isPaired?'<span class="tag tag-yellow">並排</span>':''}</div>
+          <div class="strip-sub">寬 ${s.usedW.toFixed(1)}/${THREE_W}cm｜${s.items.length}張</div>
+        </div>
+        <div class="strip-h">${s.height}cm</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
 
   document.getElementById('result-content').innerHTML=html;
 }
@@ -438,7 +407,7 @@ function renderViz(){
   const d=calcData;
   if(!d){document.getElementById('viz-info').textContent='請先計算';return;}
   const isThree=vizMode==='three';
-  const strips=isThree?d.threeStrips:d.allFour;
+  const strips=isThree?d.threeStrips:d.fourStrips;
   const rollW=isThree?THREE_W:FOUR_W;
   const total=isThree?d.threeTotal:d.fourTotal;
 
@@ -447,28 +416,19 @@ function renderViz(){
   const canvas=document.getElementById('viz-canvas');
   const wrap=canvas.parentElement;
   const maxW=wrap.clientWidth-20;
-  const SCALE=Math.min(2.2, (maxW-4)/rollW);
+  const SCALE=Math.min(2.2,(maxW-4)/rollW);
   const PAD=16;
   const cw=Math.ceil(rollW*SCALE)+PAD*2;
-  const ch=Math.min(Math.ceil(total*SCALE)+PAD*2,4000);
-  canvas.width=cw; canvas.height=ch;
+  const ch=Math.min(Math.ceil(total*SCALE)+PAD*2,5000);
+  canvas.width=cw;canvas.height=ch;
   canvas.style.width=cw+'px';
 
   const ctx=canvas.getContext('2d');
-  ctx.fillStyle='#0d0d1a'; ctx.fillRect(0,0,cw,ch);
-  ctx.strokeStyle='#00d4ff44'; ctx.lineWidth=1;
+  ctx.fillStyle='#0d0d1a';ctx.fillRect(0,0,cw,ch);
+  ctx.strokeStyle='#00d4ff44';ctx.lineWidth=1;
   ctx.strokeRect(PAD,PAD,rollW*SCALE,Math.min(total*SCALE,ch-PAD*2));
 
-  if(!isThree){
-    ctx.setLineDash([4,4]);
-    ctx.strokeStyle='#ffd93d33';
-    ctx.beginPath();
-    ctx.moveTo(PAD+60*SCALE,PAD);
-    ctx.lineTo(PAD+60*SCALE,ch-PAD);
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
-
+  // 收集所有不重複 label
   const allLabels=new Set();
   strips.forEach(s=>s.items.forEach(it=>allLabels.add(it.label)));
   const labelArr=[...allLabels];
@@ -477,7 +437,7 @@ function renderViz(){
 
   let y=PAD;
   strips.forEach((strip,si)=>{
-    if(y>=ch-PAD) return;
+    if(y>=ch-PAD)return;
     const sh=strip.height*SCALE;
     ctx.fillStyle=si%2===0?'#ffffff07':'#00000000';
     ctx.fillRect(PAD,y,rollW*SCALE,Math.min(sh,ch-y-PAD));
@@ -486,26 +446,31 @@ function renderViz(){
       const ix=PAD+item.x*SCALE;
       const iw=item.useW*SCALE;
       const ih=item.useH*SCALE;
-      const color=colorMap[item.label];
       const drawH=Math.min(ih,ch-y-PAD);
-      ctx.fillStyle=strip.needSplit?'#ff8c0033':color+'55';
+      const color=item.isCut?'#cc5de8':colorMap[item.label];
+
+      ctx.fillStyle=color+'55';
       ctx.fillRect(ix,y,iw,drawH);
-      ctx.strokeStyle=strip.needSplit?'#ff8c00':color;
-      ctx.lineWidth=strip.paired?2:1.5;
+      ctx.strokeStyle=color;
+      ctx.lineWidth=item.isCut?2:1.5;
+      if(item.isCut){ctx.setLineDash([4,3]);}
       ctx.strokeRect(ix,y,iw,drawH);
+      ctx.setLineDash([]);
+
       if(iw>32&&drawH>18){
         ctx.fillStyle='#fff';
         ctx.font=`${Math.min(10,iw/6)}px Arial`;
         ctx.textAlign='center';
         ctx.textBaseline='middle';
-        ctx.fillText(item.label,ix+iw/2,y+drawH/2);
+        const txt=item.isCut?item.label+'✂':item.label;
+        ctx.fillText(txt,ix+iw/2,y+drawH/2);
       }
     });
 
-    ctx.fillStyle='#ffffff44'; ctx.font='8px Arial';
-    ctx.textAlign='left'; ctx.textBaseline='top';
-    const tag=strip.paired?'🟡':strip.needSplit?'⚠️':'';
-    ctx.fillText(`${tag}${si+1} (${strip.height}cm)`,PAD+2,y+2);
+    ctx.fillStyle='#ffffff44';ctx.font='8px Arial';
+    ctx.textAlign='left';ctx.textBaseline='top';
+    const tag=strip.items.some(i=>i.isCut)?'✂':strip.items.length>1?'🟡':'';
+    ctx.fillText(`${tag}${si+1}(${strip.height}cm)`,PAD+2,y+2);
     y+=sh;
   });
 
@@ -519,40 +484,33 @@ function switchViz(mode){
   renderViz();
 }
 
-// ===== 導航 =====
-function showPage(name, btn){
+function showPage(name,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('content').scrollTop=0;
-  if(name==='viz') setTimeout(renderViz,50);
+  if(name==='viz')setTimeout(renderViz,50);
 }
 
 function goCalc(){
   if(pieces.length===0){alert('請先新增料單');return;}
   calcData=calculate();
   renderResult();
-  // 切換到結果頁
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-result').classList.add('active');
   document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',i===1));
   document.getElementById('content').scrollTop=0;
 }
 
-// ===== Enter 快速新增 =====
 ['in-w','in-h','in-q'].forEach(id=>{
-  document.getElementById(id).addEventListener('keydown',e=>{
-    if(e.key==='Enter') addPiece();
-  });
+  document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')addPiece();});
 });
 
-// ===== PWA =====
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 
-// ===== 初始化 =====
 renderList();
 </script>
 </body>
