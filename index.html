@@ -285,18 +285,29 @@ function calculate(){
     for(let i=0;i<p.q;i++) raw.push({w:p.w,h:p.h,label:`${p.w}×${p.h}`});
   });
 
-  // 每張料先決定用四尺還是三尺
-  // 規則：短邊<=三尺 → 三尺；短邊<=四尺 → 四尺；都超 → 切割後放四尺
+  // 決定用哪種捲料：
+  // 短邊 <= THREE_W/2 (~45.45cm) → 可並排於三尺，用三尺
+  // 短邊 > THREE_W/2 且 <= FOUR_W/2 (~60.6cm) → 可並排於四尺但不能並於三尺，用四尺
+  // 短邊 > FOUR_W/2 且 <= THREE_W → 兩種都排不了對，用三尺（較省）
+  // 短邊 > THREE_W 且 <= FOUR_W → 只放得進四尺
+  // 短邊 > FOUR_W → 需切割後放四尺
+  const PAIR3=THREE_W/2, PAIR4=FOUR_W/2;
   const fourItems=[], threeItems=[];
 
   raw.forEach(p=>{
-    const minE=Math.min(p.w,p.h);
+    const minE=Math.min(p.w,p.h), maxE=Math.max(p.w,p.h);
+    const item={useW:minE,useH:maxE,label:p.label,isCut:false};
     if(minE<=THREE_W){
-      // 三尺可放
-      threeItems.push({useW:minE,useH:Math.max(p.w,p.h),label:p.label,isCut:false});
+      if(minE>PAIR3 && minE<=PAIR4){
+        // 只有四尺能並排 → 放四尺
+        fourItems.push(item);
+      } else {
+        // 三尺即可（含可並排於三尺，或兩種都不能並排但三尺夠）
+        threeItems.push(item);
+      }
     } else if(minE<=FOUR_W){
       // 四尺才放得下
-      fourItems.push({useW:minE,useH:Math.max(p.w,p.h),label:p.label,isCut:false});
+      fourItems.push(item);
     } else {
       // 兩邊都超四尺 → 切割
       const segs=slicePiece(p,FOUR_W);
@@ -352,35 +363,36 @@ function renderResult(){
   let html='';
 
   html+=`<div class="summary-row">
-    <div class="stat-card"><div class="stat-val">${(fourTotal/100).toFixed(2)}m</div><div class="stat-lbl">四尺捲料用量</div></div>
-    <div class="stat-card"><div class="stat-val red">${(threeTotal/100).toFixed(2)}m</div><div class="stat-lbl">三尺捲料用量</div></div>
+    ${fourTotal>0?`<div class="stat-card"><div class="stat-val">${(fourTotal/100).toFixed(2)}m</div><div class="stat-lbl">四尺捲料用量</div></div>`:''}
+    ${threeTotal>0?`<div class="stat-card"><div class="stat-val red">${(threeTotal/100).toFixed(2)}m</div><div class="stat-lbl">三尺捲料用量</div></div>`:''}
   </div>`;
 
   html+=`<div class="info-tip">
     🟡 黃色 = 多張並排（省料）<br>
-    🔵 藍色 = 四尺單張&nbsp;&nbsp;🔴 紅色 = 三尺<br>
-    🟣 紫色 = 超規格已自動切割（共 ${cutCount} 片）<br>
-    建議實際購買加 10% 損耗
+    🔵 藍色 = 四尺單張&nbsp;&nbsp;🔴 紅色 = 三尺${cutCount>0?`<br>🟣 紫色 = 超規格已自動切割（共 ${cutCount} 片）`:''}
+    <br>建議實際購買加 10% 損耗
   </div>`;
 
   // 四尺
-  html+=`<div class="section-card">
-    <div class="section-head"><span class="badge badge-blue">四尺 121.2cm</span><span class="section-sub">${fourStrips.length} 行 / ${(fourTotal/100).toFixed(2)} m</span></div>`;
-  fourStrips.forEach((s,i)=>{
-    const isPaired=s.items.length>1;
-    const hasCut=s.items.some(it=>it.isCut);
-    const cls=hasCut?'cut':isPaired?'paired':'';
-    const labels=s.items.map(it=>it.isCut?`${it.label}(切)`:it.label).join(' ＋ ');
-    const tag=hasCut?'<span class="tag tag-purple">含切割</span>':isPaired?'<span class="tag tag-yellow">並排</span>':'';
-    html+=`<div class="strip-item ${cls}">
-      <div style="flex:1">
-        <div class="strip-lbl">行${i+1}：${labels}${tag}</div>
-        <div class="strip-sub">寬 ${s.usedW.toFixed(1)}/${FOUR_W}cm｜${s.items.length}張</div>
-      </div>
-      <div class="strip-h">${s.height}cm</div>
-    </div>`;
-  });
-  html+=`</div>`;
+  if(fourStrips.length>0){
+    html+=`<div class="section-card">
+      <div class="section-head"><span class="badge badge-blue">四尺 121.2cm</span><span class="section-sub">${fourStrips.length} 行 / ${(fourTotal/100).toFixed(2)} m</span></div>`;
+    fourStrips.forEach((s,i)=>{
+      const isPaired=s.items.length>1;
+      const hasCut=s.items.some(it=>it.isCut);
+      const cls=hasCut?'cut':isPaired?'paired':'';
+      const labels=s.items.map(it=>it.isCut?`${it.label}(切)`:it.label).join(' ＋ ');
+      const tag=hasCut?'<span class="tag tag-purple">含切割</span>':isPaired?'<span class="tag tag-yellow">並排</span>':'';
+      html+=`<div class="strip-item ${cls}">
+        <div style="flex:1">
+          <div class="strip-lbl">行${i+1}：${labels}${tag}</div>
+          <div class="strip-sub">寬 ${s.usedW.toFixed(1)}/${FOUR_W}cm｜${s.items.length}張</div>
+        </div>
+        <div class="strip-h">${s.height.toFixed(1)}cm</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
 
   // 三尺
   if(threeStrips.length>0){
@@ -394,7 +406,7 @@ function renderResult(){
           <div class="strip-lbl">行${i+1}：${labels}${isPaired?'<span class="tag tag-yellow">並排</span>':''}</div>
           <div class="strip-sub">寬 ${s.usedW.toFixed(1)}/${THREE_W}cm｜${s.items.length}張</div>
         </div>
-        <div class="strip-h">${s.height}cm</div>
+        <div class="strip-h">${s.height.toFixed(1)}cm</div>
       </div>`;
     });
     html+=`</div>`;
