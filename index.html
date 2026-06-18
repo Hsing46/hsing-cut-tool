@@ -54,7 +54,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvet
 .icon-btn{background:none;border:none;cursor:pointer;padding:4px;border-radius:6px;color:var(--muted);font-size:1.1em;}
 .icon-btn:active{background:var(--bg3);}
 .empty-hint{text-align:center;color:var(--muted);font-size:0.82em;padding:40px 0;}
-.calc-bar{position:sticky;bottom:calc(var(--bar)+8px);left:0;right:0;padding:8px 0 0;background:linear-gradient(transparent,var(--bg) 40%);}
+.calc-bar{position:fixed;bottom:var(--bar);left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:8px 14px 10px;background:linear-gradient(transparent,var(--bg) 45%);z-index:50;display:flex;gap:8px;}
 
 /* 結果 */
 .summary-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
@@ -127,8 +127,10 @@ canvas{display:block;}
       </div>
       <div id="piece-list" class="piece-list"></div>
       <div id="empty-hint" class="empty-hint">尚未輸入任何尺寸<br>從上方新增料單</div>
+      <div style="height:70px;"></div>
       <div class="calc-bar">
-        <button class="btn btn-yellow" style="width:100%;padding:13px;" onclick="goCalc()">🔢 計算排版</button>
+        <button class="btn btn-yellow" style="flex:1;padding:13px;" onclick="goCalc()">🔢 計算排版</button>
+        <button class="btn btn-ghost" style="padding:13px 18px;" onclick="clearAll()">清除</button>
       </div>
     </div>
     <!-- 結果頁 -->
@@ -199,6 +201,12 @@ function addPiece(){
 }
 
 function deletePiece(i){pieces.splice(i,1);savePieces();renderList();}
+
+function clearAll(){
+  if(pieces.length===0)return;
+  if(!confirm('確定清除全部料單？'))return;
+  pieces=[];savePieces();calcData=null;renderList();
+}
 
 function openEdit(i){
   editIdx=i;
