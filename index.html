@@ -125,6 +125,7 @@ canvas{display:block;}
         <div class="field" style="max-width:60px;"><label>數量</label><input type="number" id="in-q" placeholder="張" min="1" value="1" inputmode="numeric"></div>
         <div style="padding-bottom:2px;"><label style="visibility:hidden">加</label><button class="btn btn-blue" onclick="addPiece()">＋</button></div>
       </div>
+      <button class="btn btn-ghost" style="width:100%;margin-bottom:12px;font-size:0.8em;" onclick="openBatch()">📋 批量貼上多筆</button>
       <div id="piece-list" class="piece-list"></div>
       <div id="empty-hint" class="empty-hint">尚未輸入任何尺寸<br>從上方新增料單</div>
       <div style="height:70px;"></div>
@@ -159,6 +160,23 @@ canvas{display:block;}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>排版圖
     </button>
   </nav>
+</div>
+
+<div class="overlay hidden" id="batch-overlay" onclick="closeBatch(event)">
+  <div class="modal">
+    <h2>📋 批量貼上</h2>
+    <div style="font-size:0.72em;color:var(--muted);margin-bottom:8px;line-height:1.9;">
+      每行一筆，支援各種格式：<br>
+      <span style="color:var(--blue)">122*50</span>　<span style="color:var(--blue)">105x55cm</span>　<span style="color:var(--blue)">50公分x30cm</span><br>
+      結尾可加數量：<span style="color:var(--blue)">60x100 3張</span>　<span style="color:var(--blue)">80×50×2</span>
+    </div>
+    <textarea id="batch-text" oninput="updateBatchPreview()" style="width:100%;height:130px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-size:0.88em;resize:none;line-height:1.6;" placeholder="貼上或輸入尺寸..."></textarea>
+    <div id="batch-preview" style="min-height:22px;margin-top:6px;font-size:0.72em;line-height:1.7;"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeBatch()">取消</button>
+      <button class="btn btn-blue" onclick="confirmBatch()">匯入</button>
+    </div>
+  </div>
 </div>
 
 <div class="overlay hidden" id="edit-overlay" onclick="closeEdit(event)">
@@ -206,6 +224,49 @@ function clearAll(){
   if(pieces.length===0)return;
   if(!confirm('確定清除全部料單？'))return;
   pieces=[];savePieces();calcData=null;renderList();
+}
+
+function openBatch(){
+  document.getElementById('batch-text').value='';
+  document.getElementById('batch-preview').innerHTML='';
+  document.getElementById('batch-overlay').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('batch-text').focus(),100);
+}
+
+function closeBatch(e){
+  if(e&&e.target!==document.getElementById('batch-overlay'))return;
+  document.getElementById('batch-overlay').classList.add('hidden');
+}
+
+function parseLine(line){
+  line=line.trim();
+  if(!line)return null;
+  const m=line.match(/(\d+(?:\.\d+)?)\s*(?:cm|公分|CM)?\s*[xX×*＊]\s*(\d+(?:\.\d+)?)\s*(?:cm|公分|CM)?/);
+  if(!m)return null;
+  const w=parseFloat(m[1]),h=parseFloat(m[2]);
+  if(!w||!h||w<=0||h<=0)return null;
+  const rest=line.slice(m.index+m[0].length);
+  const qm=rest.match(/(\d+)\s*(?:張|片|個)?/);
+  const q=qm?Math.max(1,parseInt(qm[1])):1;
+  return{w,h,q};
+}
+
+function updateBatchPreview(){
+  const lines=document.getElementById('batch-text').value.split(/\r?\n/);
+  const parsed=lines.map(parseLine).filter(Boolean);
+  const el=document.getElementById('batch-preview');
+  if(!parsed.length){el.innerHTML='';return;}
+  el.innerHTML=`<span style="color:var(--green)">✓ 解析到 ${parsed.length} 筆：</span><br>`
+    +parsed.map(p=>`<span style="color:var(--text)">${p.w}×${p.h}cm${p.q>1?` ×${p.q}張`:''}</span>`).join('　');
+}
+
+function confirmBatch(){
+  const lines=document.getElementById('batch-text').value.split(/\r?\n/);
+  const parsed=lines.map(parseLine).filter(Boolean);
+  if(!parsed.length){alert('沒有解析到有效的尺寸\n請確認格式如：122*50 或 105x55cm');return;}
+  parsed.forEach(p=>pieces.push(p));
+  savePieces();renderList();
+  document.getElementById('batch-overlay').classList.add('hidden');
 }
 
 function openEdit(i){
