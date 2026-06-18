@@ -1,7 +1,7 @@
 {
-  "name": "卡點西德排版計算",
-  "short_name": "排版計算",
-  "description": "卡點西德用料排版最佳化工具",
+  "name": "怎麼裁料比較省小工具",
+  "short_name": "裁料小工具",
+  "description": "輸入尺寸自動排版，裁料最省",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
